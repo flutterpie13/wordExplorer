@@ -1,0 +1,50 @@
+[
+  {
+    "pairId": 1,
+    "content": "go",
+    "isScene": false,
+    "class": 5,
+    "topic": "school",
+    "wordType": "verb"
+  },
+  {
+    "pairId": 1,
+    "content": "A person goes to school.",
+    "isScene": true,
+    "class": 5,
+    "topic": "school",
+    "wordType": "verb"
+  },
+  {
+    "pairId": 2,
+    "content": "apple",
+    "isScene": false,
+    "class": 5,
+    "topic": "food",
+    "wordType": "noun"
+  },
+  {
+    "pairId": 2,
+    "content": "An apple is red and sweet.",
+    "isScene": true,
+    "class": 5,
+    "topic": "food",
+    "wordType": "noun"
+  },
+  {
+    "pairId": 3,
+    "content": "run",
+    "isScene": false,
+    "class": 5,
+    "topic": "home",
+    "wordType": "verb"
+  },
+  {
+    "pairId": 3,
+    "content": "A child runs in the park.",
+    "isScene": true,
+    "class": 5,
+    "topic": "home",
+    "wordType": "verb"
+  }
+]
