@@ -3,7 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:word_explorer/data/datasources/json_data_source.dart';
 import 'package:word_explorer/data/repositories/card_repository_impl.dart';
-import 'package:word_explorer/domain/entities/card_pair.dart';
+import 'package:word_explorer/domain/entities/card.dart';
 
 // Generiert eine Mock-Klasse mit dem benutzerdefinierten Namen
 @GenerateMocks(
@@ -13,8 +13,7 @@ import 'package:word_explorer/domain/entities/card_pair.dart';
 import 'card_repository_impl_test.mocks.dart'; // Datei mit generierten Mocks
 
 void main() {
-  late CustomMockJsonDataSource
-      mockJsonDataSource; // Generierte Klasse wird verwendet
+  late CustomMockJsonDataSource mockJsonDataSource; // Generierter Mock
   late CardRepositoryImpl repository;
 
   setUp(() {
@@ -23,37 +22,53 @@ void main() {
   });
 
   group('CardRepositoryImpl', () {
-    test(
-        'should return a list of CardPair when the datasource successfully loads data',
+    test('should return a list of CardModel when the datasource loads data',
         () async {
-      // Arrange: Mock-Daten für den JsonDataSource
-      final mockCardPairs = [
-        CardPair(
-          word: 'dog',
-          sceneDescription: 'A dog runs after the ball.',
-          sceneImagePath: 'assets/images/dog.png',
-          wordType: 'Noun',
-          category: 'Animals',
+      // Arrange: Mock-Daten für JsonDataSource
+      final mockCardModels = [
+        CardModel(
+          pairId: 1,
+          content: 'dog',
+          isScene: false,
+          classLevel: 5,
+          topic: 'animals',
+          wordType: 'noun',
         ),
-        CardPair(
-          word: 'apple',
-          sceneDescription: 'An apple is red and sweet.',
-          sceneImagePath: 'assets/images/apple.png',
-          wordType: 'Noun',
-          category: 'Food',
+        CardModel(
+          pairId: 1,
+          content: 'A dog runs after the ball.',
+          isScene: true,
+          classLevel: 5,
+          topic: 'animals',
+          wordType: 'noun',
         ),
       ];
 
+      // Simuliere das Verhalten der loadCardPairs-Methode
       when(mockJsonDataSource.loadCardPairs())
-          .thenAnswer((_) async => mockCardPairs);
+          .thenAnswer((_) async => mockCardModels);
 
       // Act: Repository-Funktion aufrufen
       final result = await repository.getCardPairs();
 
       // Assert: Überprüfen, ob die Ergebnisse korrekt sind
-      expect(result, mockCardPairs);
+      expect(result, mockCardModels);
       verify(mockJsonDataSource.loadCardPairs())
-          .called(1); // Sicherstellen, dass die Funktion aufgerufen wurde
+          .called(1); // Überprüfe den Aufruf
+    });
+
+    test('should return an empty list when the datasource throws an exception',
+        () async {
+      // Arrange: Simuliere einen Fehler beim Laden der Karten
+      when(mockJsonDataSource.loadCardPairs()).thenThrow(Exception('Fehler'));
+
+      // Act: Repository-Funktion aufrufen
+      final result = await repository.getCardPairs();
+
+      // Assert: Überprüfen, ob eine leere Liste zurückgegeben wird
+      expect(result, isEmpty);
+      verify(mockJsonDataSource.loadCardPairs())
+          .called(1); // Überprüfe den Aufruf
     });
   });
 }

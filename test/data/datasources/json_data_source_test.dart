@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:word_explorer/data/datasources/json_data_source.dart';
-import 'package:word_explorer/domain/entities/card_pair.dart';
+import 'package:word_explorer/domain/entities/card.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -13,24 +13,42 @@ void main() {
       jsonDataSource = JsonDataSource();
     });
 
-    test('should load card pairs from JSON and return a list of CardPair',
+    test('should load card pairs from JSON and return a list of CardModel',
         () async {
       // Mock JSON-Datei in den Asset-Bundle laden
       const mockJson = '''
       [
         {
-          "word": "dog",
-          "sceneDescription": "A dog runs after the ball.",
-          "sceneImagePath": "assets/images/dog.png",
-          "wordType": "Noun",
-          "category": "Animals"
+          "pairId": 1,
+          "content": "dog",
+          "isScene": false,
+          "classLevel": 5,
+          "topic": "animals",
+          "wordType": "noun"
         },
         {
-          "word": "apple",
-          "sceneDescription": "An apple is red and sweet.",
-          "sceneImagePath": "assets/images/apple.png",
-          "wordType": "Noun",
-          "category": "Food"
+          "pairId": 1,
+          "content": "A dog runs after the ball.",
+          "isScene": true,
+          "classLevel": 5,
+          "topic": "animals",
+          "wordType": "noun"
+        },
+        {
+          "pairId": 2,
+          "content": "apple",
+          "isScene": false,
+          "classLevel": 5,
+          "topic": "food",
+          "wordType": "noun"
+        },
+        {
+          "pairId": 2,
+          "content": "An apple is red and sweet.",
+          "isScene": true,
+          "classLevel": 5,
+          "topic": "food",
+          "wordType": "noun"
         }
       ]
       ''';
@@ -44,22 +62,42 @@ void main() {
       );
 
       // Führe den Test aus
-      final List<CardPair> cardPairs = await jsonDataSource.loadCardPairs();
+      final List<CardModel> cardModels = await jsonDataSource.loadCardPairs();
 
       // Überprüfe die Ergebnisse
-      expect(cardPairs.length, 2);
+      expect(cardModels.length, 4);
 
-      expect(cardPairs[0].word, 'dog');
-      expect(cardPairs[0].sceneDescription, 'A dog runs after the ball.');
-      expect(cardPairs[0].sceneImagePath, 'assets/images/dog.png');
-      expect(cardPairs[0].wordType, 'Noun');
-      expect(cardPairs[0].category, 'Animals');
+      // Überprüfung der ersten Karte
+      expect(cardModels[0].pairId, 1);
+      expect(cardModels[0].content, 'dog');
+      expect(cardModels[0].isScene, false);
+      expect(cardModels[0].classLevel, 5);
+      expect(cardModels[0].topic, 'animals');
+      expect(cardModels[0].wordType, 'noun');
 
-      expect(cardPairs[1].word, 'apple');
-      expect(cardPairs[1].sceneDescription, 'An apple is red and sweet.');
-      expect(cardPairs[1].sceneImagePath, 'assets/images/apple.png');
-      expect(cardPairs[1].wordType, 'Noun');
-      expect(cardPairs[1].category, 'Food');
+      // Überprüfung der zweiten Karte (Szene)
+      expect(cardModels[1].pairId, 1);
+      expect(cardModels[1].content, 'A dog runs after the ball.');
+      expect(cardModels[1].isScene, true);
+      expect(cardModels[1].classLevel, 5);
+      expect(cardModels[1].topic, 'animals');
+      expect(cardModels[1].wordType, 'noun');
+
+      // Überprüfung der dritten Karte
+      expect(cardModels[2].pairId, 2);
+      expect(cardModels[2].content, 'apple');
+      expect(cardModels[2].isScene, false);
+      expect(cardModels[2].classLevel, 5);
+      expect(cardModels[2].topic, 'food');
+      expect(cardModels[2].wordType, 'noun');
+
+      // Überprüfung der vierten Karte (Szene)
+      expect(cardModels[3].pairId, 2);
+      expect(cardModels[3].content, 'An apple is red and sweet.');
+      expect(cardModels[3].isScene, true);
+      expect(cardModels[3].classLevel, 5);
+      expect(cardModels[3].topic, 'food');
+      expect(cardModels[3].wordType, 'noun');
     });
   });
 }

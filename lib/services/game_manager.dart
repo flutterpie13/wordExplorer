@@ -38,8 +38,9 @@ class GameManager {
     onCardsLoaded(selectedCards); // Aktualisiere die Karten im UI
   }
 
-  void resetGame() {
-    onGameReset(); // Führt den Reset im UI aus
+  void resetGame(DifficultyLevel difficultyLevel) {
+    onGameReset(); // Spiellogik zurücksetzen
+    loadCards(difficultyLevel); // Führt den Reset im UI aus
   }
 
   void changeDifficulty(
@@ -65,7 +66,7 @@ class GameManager {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(); // Dialog schließen
-                  resetGame(); // Spiel zurücksetzen
+                  resetGame(currentLevel); // Spiel zurücksetzen
                   onDifficultyChanged(DifficultyLevel(difficulty));
                 },
                 child: const Text('Proceed'),

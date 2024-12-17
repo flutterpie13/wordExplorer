@@ -82,18 +82,21 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       _selectedTopic = newTopic;
     });
+    _gameManager.resetGame(_difficultyLevel);
   }
 
   void _updateWordType(String newWordType) {
     setState(() {
       _selectedWordType = newWordType;
     });
+    _gameManager.resetGame(_difficultyLevel);
   }
 
   void _updateDifficulty(String newDifficulty) {
     setState(() {
       _selectedDifficulty = newDifficulty;
     });
+    _gameManager.resetGame(_difficultyLevel);
   }
 
   void _changeDifficulty(Difficulty difficulty) {
@@ -477,7 +480,7 @@ class _GameScreenState extends State<GameScreen> {
             ),
             FloatingActionButton(
               onPressed: () {
-                _gameManager.resetGame();
+                _gameManager.resetGame(_difficultyLevel);
               },
               child: const Icon(Icons.refresh),
             ),

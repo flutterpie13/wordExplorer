@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:word_explorer/domain/entities/card_pair.dart';
 import 'package:word_explorer/domain/usecases/check_card_match.dart';
 import 'package:word_explorer/domain/usecases/difficulty_level.dart';
+import 'package:word_explorer/domain/entities/card.dart';
 
 void main() {
   group('CheckCardMatch', () {
@@ -11,23 +11,25 @@ void main() {
       difficultyLevel = DifficultyLevel(Difficulty.easy);
     });
 
-    test('should return true for matching cards in easy mode', () {
+    test('should return true for matching pairIds in easy mode', () {
       final useCase = CheckCardMatch(difficultyLevel);
 
-      final card1 = CardPair(
-        word: 'dog',
-        sceneDescription: 'A dog runs after the ball.',
-        sceneImagePath: 'assets/images/dog.png',
-        wordType: 'Noun',
-        category: 'Animals',
+      final card1 = CardModel(
+        pairId: 1,
+        content: 'dog',
+        isScene: false,
+        classLevel: 5,
+        topic: 'animals',
+        wordType: 'noun',
       );
 
-      final card2 = CardPair(
-        word: 'dog',
-        sceneDescription: 'A dog runs after the ball.',
-        sceneImagePath: 'assets/images/dog.png',
-        wordType: 'Noun',
-        category: 'Animals',
+      final card2 = CardModel(
+        pairId: 1,
+        content: 'A dog runs after the ball.',
+        isScene: true,
+        classLevel: 5,
+        topic: 'animals',
+        wordType: 'noun',
       );
 
       final result = useCase.execute(card1, card2);
@@ -35,23 +37,25 @@ void main() {
       expect(result, true);
     });
 
-    test('should return false for mismatching cards in easy mode', () {
+    test('should return false for mismatching pairIds in easy mode', () {
       final useCase = CheckCardMatch(difficultyLevel);
 
-      final card1 = CardPair(
-        word: 'dog',
-        sceneDescription: 'A dog runs after the ball.',
-        sceneImagePath: 'assets/images/dog.png',
-        wordType: 'Noun',
-        category: 'Animals',
+      final card1 = CardModel(
+        pairId: 1,
+        content: 'dog',
+        isScene: false,
+        classLevel: 5,
+        topic: 'animals',
+        wordType: 'noun',
       );
 
-      final card2 = CardPair(
-        word: 'cat',
-        sceneDescription: 'A cat sleeps on the couch.',
-        sceneImagePath: 'assets/images/cat.png',
-        wordType: 'Noun',
-        category: 'Animals',
+      final card2 = CardModel(
+        pairId: 2,
+        content: 'cat',
+        isScene: false,
+        classLevel: 5,
+        topic: 'animals',
+        wordType: 'noun',
       );
 
       final result = useCase.execute(card1, card2);
@@ -63,20 +67,49 @@ void main() {
       difficultyLevel = DifficultyLevel(Difficulty.medium);
       final useCase = CheckCardMatch(difficultyLevel);
 
-      final card1 = CardPair(
-        word: 'run',
-        sceneDescription: 'The dog runs.',
-        sceneImagePath: 'assets/images/run.png',
-        wordType: 'Verb',
-        category: 'Actions',
+      final card1 = CardModel(
+        pairId: 1,
+        content: 'run',
+        isScene: false,
+        classLevel: 5,
+        topic: 'actions',
+        wordType: 'verb',
       );
 
-      final card2 = CardPair(
-        word: 'run',
-        sceneDescription: 'The dog runs.',
-        sceneImagePath: 'assets/images/run.png',
-        wordType: 'Noun',
-        category: 'Actions',
+      final card2 = CardModel(
+        pairId: 1,
+        content: 'run',
+        isScene: false,
+        classLevel: 5,
+        topic: 'actions',
+        wordType: 'noun',
+      );
+
+      final result = useCase.execute(card1, card2);
+
+      expect(result, false);
+    });
+
+    test('should return false for mismatching content in hard mode', () {
+      difficultyLevel = DifficultyLevel(Difficulty.hard);
+      final useCase = CheckCardMatch(difficultyLevel);
+
+      final card1 = CardModel(
+        pairId: 1,
+        content: 'run',
+        isScene: false,
+        classLevel: 5,
+        topic: 'actions',
+        wordType: 'verb',
+      );
+
+      final card2 = CardModel(
+        pairId: 1,
+        content: 'running',
+        isScene: false,
+        classLevel: 5,
+        topic: 'actions',
+        wordType: 'verb',
       );
 
       final result = useCase.execute(card1, card2);
