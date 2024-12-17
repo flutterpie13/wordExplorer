@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+
 import '../domain/entities/card.dart';
 
 class CardLoaderService {

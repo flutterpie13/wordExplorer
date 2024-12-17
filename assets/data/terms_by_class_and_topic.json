@@ -1,0 +1,53 @@
+{
+    "classes": [
+      {
+        "classLevel": 5,
+        "topics": [
+          {
+            "topic": "school",
+            "pairs": [
+              {
+                "pairId": 1,
+                "term": "go",
+                "scene": "A person goes to school.",
+                "wordType": "verb"
+              },
+              {
+                "pairId": 2,
+                "term": "run",
+                "scene": "A child runs in the park.",
+                "wordType": "verb"
+              }
+            ]
+          },
+          {
+            "topic": "food",
+            "pairs": [
+              {
+                "pairId": 3,
+                "term": "apple",
+                "scene": "An apple is red and sweet.",
+                "wordType": "noun"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "classLevel": 6,
+        "topics": [
+          {
+            "topic": "sports",
+            "pairs": [
+              {
+                "pairId": 4,
+                "term": "jump",
+                "scene": "The athlete jumps high.",
+                "wordType": "verb"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
