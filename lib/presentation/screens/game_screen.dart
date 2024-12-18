@@ -36,7 +36,6 @@ class _GameScreenState extends State<GameScreen> {
   late String _selectedTopic;
   late String _selectedWordType;
   late String _selectedDifficulty;
-
   late GameManager _gameManager;
 
   @override
@@ -77,7 +76,7 @@ class _GameScreenState extends State<GameScreen> {
     // Initialisiere CardManager und lade gefilterte Karten
     _cardManager = CardManager();
     _cardManager.loadCards().then((_) {
-      _loadFilteredCards();
+      _loadCards();
     });
   }
 
@@ -157,28 +156,25 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _loadFilteredCards({
-    int classLevel = 5,
-    String topic = 'all',
-    String wordType = 'all',
-  }) {
-    setState(() {
-      _cards = _cardManager.filterCards(
-        classLevel: classLevel,
-        topic: topic,
-        wordType: wordType,
-      );
-      _cards.shuffle();
-    });
-  }
-
-  void _loadCards() async {
+  void _loadCards({
+    int? classLevel,
+    String? topic,
+    String? wordType,
+  }) async {
     final CardLoaderService cardLoaderService = CardLoaderService();
-    final allCards =
-        await cardLoaderService.loadCards(); // Keine Parameter übergeben
+    final allCards = await cardLoaderService.loadCards();
 
     setState(() {
-      _cards = allCards; // Filterlogik später anwenden
+      _cards = allCards.where((card) {
+        final matchesClass =
+            classLevel == null || card.classLevel == classLevel;
+        final matchesTopic =
+            topic == null || topic == 'all' || card.topic == topic;
+        final matchesWordType =
+            wordType == null || wordType == 'all' || card.wordType == wordType;
+
+        return matchesClass && matchesTopic && matchesWordType;
+      }).toList();
       _cards.shuffle();
     });
   }
@@ -353,6 +349,21 @@ class _GameScreenState extends State<GameScreen> {
       },
     );
   }*/
+  Widget _buildScoreboard() {
+    final totalPairs = _cards.length ~/ 2;
+    final foundPairs = _matchedCards.length ~/ 2;
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Gefundene Paare: $foundPairs'),
+          Text('Übrige Paare: ${totalPairs - foundPairs}'),
+        ],
+      ),
+    );
+  }
 
   void _toggleCard(int index) {
     if (_flippedCards.contains(index)) {
@@ -368,6 +379,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int crossAxisCount = MediaQuery.of(context).size.width > 600 ? 6 : 4;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Word Explorer'),
@@ -495,10 +507,11 @@ class _GameScreenState extends State<GameScreen> {
         },
         child: Column(
           children: [
+            _buildScoreboard(),
             Expanded(
               child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
                   childAspectRatio: 3 / 4,
                 ),
                 itemCount: _cards.length,

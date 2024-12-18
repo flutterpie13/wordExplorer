@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 class FlipCard extends StatefulWidget {
-  final String frontContent; // Entweder Wort oder Szenenbeschreibung
-  final VoidCallback onTap;
-  final bool isFlipped;
+  final String frontContent; // Inhalt der Vorderseite (Wort oder Szene)
+  final VoidCallback onTap; // Aktion bei Klick
+  final bool isFlipped; // Zeigt an, ob die Karte umgedreht ist
 
   const FlipCard({
     required this.frontContent,
     required this.onTap,
     required this.isFlipped,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   _FlipCardState createState() => _FlipCardState();
@@ -24,7 +25,7 @@ class _FlipCardState extends State<FlipCard>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
@@ -57,40 +58,50 @@ class _FlipCardState extends State<FlipCard>
           final isFront = angle <= 3.14159 / 2;
 
           return Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(angle),
-              child: isFront
-                  ? Container(
-                      color:
-                          Colors.grey, // Einheitliches Design für die Rückseite
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'BACK', // Text für die Rückseite
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    )
-                  : Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.rotationY(3.14159),
-                      child: Container(
-                        color: Colors.blue,
-                        alignment: Alignment.center,
-                        child: Text(
-                          widget.frontContent, // Zeige das Wort oder die Szene
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ));
+            alignment: Alignment.center,
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001) // Perspektive hinzufügen
+              ..rotateY(angle),
+            child: isFront
+                ? _buildBackSide()
+                : Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(3.14159),
+                    child: _buildFrontSide(),
+                  ),
+          );
         },
+      ),
+    );
+  }
+
+  Widget _buildBackSide() {
+    return Container(
+      color: Colors.grey,
+      alignment: Alignment.center,
+      child: const Text(
+        'BACK',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFrontSide() {
+    return Container(
+      color: Colors.blue,
+      alignment: Alignment.center,
+      child: Text(
+        widget.frontContent,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }
