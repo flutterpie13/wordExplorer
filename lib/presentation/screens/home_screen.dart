@@ -1,18 +1,40 @@
 import 'package:flutter/material.dart';
-import 'game_screen.dart';
+import 'package:word_explorer/presentation/screens/game_screen.dart';
+
+import '../../domain/usecases/difficulty_level.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedClass = 5; // Standardklasse
-  String _selectedTopic = 'school'; // Standardthema
-  String _selectedWordType = 'all'; // Standardwortart
-  String _selectedDifficulty = 'easy'; // Standardschwierigkeit
+  int _selectedClass = 5;
+  String _selectedTopic = 'all';
+  String _selectedWordType = 'all';
+  Difficulty _selectedDifficulty = Difficulty.easy;
 
-  void _navigateToGameScreen() {
+  final List<int> _classOptions = [5, 6];
+  final List<String> _topicOptions = [
+    'all',
+    'school',
+    'home',
+    'food',
+    'animals'
+  ];
+  final List<String> _wordTypeOptions = ['all', 'noun', 'verb', 'adjective'];
+  final List<Difficulty> _difficultyOptions = Difficulty.values;
+
+  void _startGame() {
+    if (_selectedTopic.isEmpty || _selectedWordType.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bitte alle Optionen auswählen!')),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -20,9 +42,37 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedClass: _selectedClass,
           selectedTopic: _selectedTopic,
           selectedWordType: _selectedWordType,
-          selectedDifficulty: _selectedDifficulty,
+          selectedDifficulty: _selectedDifficulty.toString().split('.').last,
         ),
       ),
+    );
+  }
+
+  Widget buildDropdown<T>({
+    required String label,
+    required T value,
+    required List<T> options,
+    required ValueChanged<T?> onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        DropdownButton<T>(
+          value: value,
+          items: options.map((option) {
+            return DropdownMenuItem<T>(
+              value: option,
+              child: Text(option.toString().split('.').last),
+            );
+          }).toList(),
+          onChanged: onChanged,
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 
@@ -30,102 +80,59 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Word Explorer - Home'),
+        title: const Text('Word Explorer - Startseite'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: () async {
-                // Zeige ein Auswahlfenster für Klasse, Thema, Wortart und Schwierigkeit
-                await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Spieloptionen'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          DropdownButton<int>(
-                            value: _selectedClass,
-                            items: [5, 6].map((level) {
-                              return DropdownMenuItem(
-                                value: level,
-                                child: Text('Klasse $level'),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedClass = value!;
-                              });
-                            },
-                          ),
-                          DropdownButton<String>(
-                            value: _selectedTopic,
-                            items:
-                                ['school', 'home', 'food', 'all'].map((topic) {
-                              return DropdownMenuItem(
-                                value: topic,
-                                child: Text(topic),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedTopic = value!;
-                              });
-                            },
-                          ),
-                          DropdownButton<String>(
-                            value: _selectedWordType,
-                            items: ['noun', 'verb', 'all'].map((type) {
-                              return DropdownMenuItem(
-                                value: type,
-                                child: Text(type),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedWordType = value!;
-                              });
-                            },
-                          ),
-                          DropdownButton<String>(
-                            value: _selectedDifficulty,
-                            items: ['easy', 'medium', 'hard'].map((difficulty) {
-                              return DropdownMenuItem(
-                                value: difficulty,
-                                child: Text(difficulty),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedDifficulty = value!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Schließe den Dialog
-                          },
-                          child: const Text('Abbrechen'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Schließe den Dialog
-                            _navigateToGameScreen(); // Navigiere zum GameScreen
-                          },
-                          child: const Text('Starten'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+            buildDropdown<int>(
+              label: 'Wähle die Klasse:',
+              value: _selectedClass,
+              options: _classOptions,
+              onChanged: (value) {
+                setState(() {
+                  _selectedClass = value!;
+                });
               },
-              child: const Text('Klasse 5'),
+            ),
+            buildDropdown<String>(
+              label: 'Wähle das Thema:',
+              value: _selectedTopic,
+              options: _topicOptions,
+              onChanged: (value) {
+                setState(() {
+                  _selectedTopic = value!;
+                });
+              },
+            ),
+            buildDropdown<String>(
+              label: 'Wähle die Wortart:',
+              value: _selectedWordType,
+              options: _wordTypeOptions,
+              onChanged: (value) {
+                setState(() {
+                  _selectedWordType = value!;
+                });
+              },
+            ),
+            buildDropdown<Difficulty>(
+              label: 'Wähle den Schwierigkeitsgrad:',
+              value: _selectedDifficulty,
+              options: _difficultyOptions,
+              onChanged: (value) {
+                setState(() {
+                  _selectedDifficulty = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 32),
+            Center(
+              child: ElevatedButton(
+                onPressed: _startGame,
+                child: const Text('Spiel Starten'),
+              ),
             ),
           ],
         ),

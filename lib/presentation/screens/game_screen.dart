@@ -42,6 +42,14 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Initialisiere die Variablen zuerst
+    _selectedClass = widget.selectedClass;
+    _selectedTopic = widget.selectedTopic;
+    _selectedWordType = widget.selectedWordType;
+    _selectedDifficulty = widget.selectedDifficulty;
+
+    // Initialisiere GameManager
     _gameManager = GameManager(
       context: context,
       onCardsLoaded: (loadedCards) {
@@ -56,17 +64,21 @@ class _GameScreenState extends State<GameScreen> {
       },
     );
 
-    _gameManager.loadCards(_difficultyLevel);
+    // Initialisiere CardMatch-Logik
     _checkCardMatch = CheckCardMatch(_difficultyLevel);
-    _gameManager.loadCards(_difficultyLevel);
+
+    // Lade Karten basierend auf den aktuellen Filtern
+    _gameManager.loadCards(
+      difficultyLevel: _difficultyLevel,
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
+    );
+
+    // Initialisiere CardManager und lade gefilterte Karten
     _cardManager = CardManager();
     _cardManager.loadCards().then((_) {
       _loadFilteredCards();
     });
-    _selectedClass = widget.selectedClass;
-    _selectedTopic = widget.selectedTopic;
-    _selectedWordType = widget.selectedWordType;
-    _selectedDifficulty = widget.selectedDifficulty;
   }
 
   void _resetGame() {
@@ -74,29 +86,53 @@ class _GameScreenState extends State<GameScreen> {
       _flippedCards.clear();
       _matchedCards.clear();
       isInteractionLocked = false;
-      _gameManager.loadCards(_difficultyLevel);
+      _gameManager.loadCards(
+        difficultyLevel: _difficultyLevel,
+        topic: _selectedTopic,
+        wordType: _selectedWordType,
+      );
     });
+  }
+
+  void _updateFilters() {
+    _gameManager.loadCards(
+      difficultyLevel: _difficultyLevel,
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
+    );
   }
 
   void _updateTopic(String newTopic) {
     setState(() {
       _selectedTopic = newTopic;
     });
-    _gameManager.resetGame(_difficultyLevel);
+    _gameManager.resetGame(
+      difficultyLevel: _difficultyLevel,
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
+    );
   }
 
   void _updateWordType(String newWordType) {
     setState(() {
       _selectedWordType = newWordType;
     });
-    _gameManager.resetGame(_difficultyLevel);
+    _gameManager.resetGame(
+      difficultyLevel: _difficultyLevel,
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
+    );
   }
 
   void _updateDifficulty(String newDifficulty) {
     setState(() {
       _selectedDifficulty = newDifficulty;
     });
-    _gameManager.resetGame(_difficultyLevel);
+    _gameManager.resetGame(
+      difficultyLevel: _difficultyLevel,
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
+    );
   }
 
   void _changeDifficulty(Difficulty difficulty) {
@@ -108,8 +144,16 @@ class _GameScreenState extends State<GameScreen> {
           _difficultyLevel = newLevel;
           _checkCardMatch = CheckCardMatch(newLevel);
         });
-        _gameManager.loadCards(newLevel);
+
+        // Lade Karten basierend auf den aktuellen Filtern
+        _gameManager.loadCards(
+          difficultyLevel: _difficultyLevel,
+          topic: _selectedTopic,
+          wordType: _selectedWordType,
+        );
       },
+      _selectedTopic, // Aktuelles Thema übergeben
+      _selectedWordType, // Aktuelle Wortart übergeben
     );
   }
 
@@ -244,7 +288,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _showAdjustDialog() {
+  /*void _showAdjustDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -256,49 +300,37 @@ class _GameScreenState extends State<GameScreen> {
               DropdownButton<String>(
                 value: _selectedTopic,
                 items: ['school', 'home', 'food', 'all'].map((topic) {
-                  return DropdownMenuItem(
+                  return DropdownMenuItem<String>(
                     value: topic,
                     child: Text(topic),
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _selectedTopic = value;
-                    });
-                  }
+                  if (value != null) _updateTopic(value);
                 },
               ),
               DropdownButton<String>(
                 value: _selectedWordType,
                 items: ['noun', 'verb', 'all'].map((type) {
-                  return DropdownMenuItem(
+                  return DropdownMenuItem<String>(
                     value: type,
                     child: Text(type),
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _selectedWordType = value;
-                    });
-                  }
+                  if (value != null) _updateWordType(value);
                 },
               ),
-              DropdownButton<String>(
-                value: _selectedDifficulty,
-                items: ['easy', 'medium', 'hard'].map((difficulty) {
-                  return DropdownMenuItem(
+              DropdownButton<Difficulty>(
+                value: _difficultyLevel.difficulty,
+                items: Difficulty.values.map((difficulty) {
+                  return DropdownMenuItem<Difficulty>(
                     value: difficulty,
-                    child: Text(difficulty),
+                    child: Text(difficulty.toString().split('.').last),
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _selectedDifficulty = value;
-                    });
-                  }
+                  if (value != null) _updateDifficulty(value.toString());
                 },
               ),
             ],
@@ -306,22 +338,21 @@ class _GameScreenState extends State<GameScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Schließe den Dialog
+                Navigator.of(context).pop();
               },
               child: const Text('Abbrechen'),
             ),
             TextButton(
               onPressed: () {
-                // Zeige eine Warnung, dass der Fortschritt verloren geht
-                _showResetWarningDialog();
+                Navigator.of(context).pop();
               },
-              child: const Text('Speichern'),
+              child: const Text('Anwenden'),
             ),
           ],
         );
       },
     );
-  }
+  }*/
 
   void _toggleCard(int index) {
     if (_flippedCards.contains(index)) {
@@ -357,46 +388,65 @@ class _GameScreenState extends State<GameScreen> {
                         children: [
                           DropdownButton<String>(
                             value: _selectedTopic,
-                            items:
-                                ['school', 'home', 'food', 'all'].map((topic) {
-                              return DropdownMenuItem(
+                            items: ['all', 'school', 'home', 'food', 'animals']
+                                .map((topic) {
+                              return DropdownMenuItem<String>(
                                 value: topic,
                                 child: Text(topic),
                               );
                             }).toList(),
                             onChanged: (value) {
                               if (value != null) {
-                                _updateTopic(value); // Aktualisiere den Zustand
+                                setState(() {
+                                  _selectedTopic = value;
+                                });
+                                _updateFilters(); // Karten mit neuem Thema laden
                               }
                             },
                           ),
                           DropdownButton<String>(
                             value: _selectedWordType,
-                            items: ['noun', 'verb', 'all'].map((type) {
-                              return DropdownMenuItem(
+                            items: ['all', 'noun', 'verb', 'adjective']
+                                .map((type) {
+                              return DropdownMenuItem<String>(
                                 value: type,
                                 child: Text(type),
                               );
                             }).toList(),
                             onChanged: (value) {
                               if (value != null) {
-                                _updateWordType(value);
+                                setState(() {
+                                  _selectedWordType = value;
+                                });
+                                _updateFilters(); // Karten mit neuer Wortart laden
                               }
                             },
                           ),
-                          DropdownButton<String>(
-                            value: _selectedDifficulty,
-                            items: ['easy', 'medium', 'hard'].map((difficulty) {
-                              return DropdownMenuItem(
+                          DropdownButton<Difficulty>(
+                            value: _difficultyLevel.difficulty,
+                            items: Difficulty.values.map((difficulty) {
+                              return DropdownMenuItem<Difficulty>(
                                 value: difficulty,
-                                child: Text(difficulty),
+                                child:
+                                    Text(difficulty.toString().split('.').last),
                               );
                             }).toList(),
                             onChanged: (value) {
                               if (value != null) {
-                                _updateDifficulty(value);
+                                _changeDifficulty(
+                                    value); // Hier wird die Methode verwendet
                               }
                             },
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              _gameManager.resetGame(
+                                difficultyLevel: _difficultyLevel,
+                                topic: _selectedTopic,
+                                wordType: _selectedWordType,
+                              );
+                            },
+                            child: const Text('Restart Game'),
                           ), // Weitere Optionen hier hinzufügen
                         ],
                       ),
@@ -447,7 +497,7 @@ class _GameScreenState extends State<GameScreen> {
           children: [
             Expanded(
               child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   childAspectRatio: 3 / 4,
                 ),
@@ -477,12 +527,6 @@ class _GameScreenState extends State<GameScreen> {
                   );
                 },
               ),
-            ),
-            FloatingActionButton(
-              onPressed: () {
-                _gameManager.resetGame(_difficultyLevel);
-              },
-              child: const Icon(Icons.refresh),
             ),
           ],
         ),

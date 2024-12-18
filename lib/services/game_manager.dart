@@ -17,20 +17,32 @@ class GameManager {
     required this.showMessage,
   });
 
-  Future<void> loadCards(DifficultyLevel difficultyLevel) async {
+  Future<void> loadCards({
+    required DifficultyLevel difficultyLevel,
+    required String topic,
+    required String wordType,
+  }) async {
     final CardLoaderService cardLoaderService = CardLoaderService();
     final allCards = await cardLoaderService.loadCards();
 
+    // Filtere Karten basierend auf Thema und Wortart
+    final filteredCards = allCards.where((card) {
+      final matchesTopic = topic == 'all' || card.topic == topic;
+      final matchesWordType = wordType == 'all' || card.wordType == wordType;
+      return matchesTopic && matchesWordType;
+    }).toList();
+
+    // Reduziere die Anzahl basierend auf der Schwierigkeit
     List<CardModel> selectedCards;
     switch (difficultyLevel.difficulty) {
       case Difficulty.easy:
-        selectedCards = allCards.take(8).toList(); // 4 Paare
+        selectedCards = filteredCards.take(8).toList(); // 4 Paare
         break;
       case Difficulty.medium:
-        selectedCards = allCards.take(12).toList(); // 6 Paare
+        selectedCards = filteredCards.take(12).toList(); // 6 Paare
         break;
       case Difficulty.hard:
-        selectedCards = allCards; // Alle Karten
+        selectedCards = filteredCards; // Alle Karten
         break;
     }
 
@@ -38,15 +50,27 @@ class GameManager {
     onCardsLoaded(selectedCards); // Aktualisiere die Karten im UI
   }
 
-  void resetGame(DifficultyLevel difficultyLevel) {
+  void resetGame({
+    required DifficultyLevel difficultyLevel,
+    required String topic,
+    required String wordType,
+  }) {
     onGameReset(); // Spiellogik zurücksetzen
-    loadCards(difficultyLevel); // Führt den Reset im UI aus
+
+    // Karten basierend auf den aktuellen Filtern neu laden
+    loadCards(
+      difficultyLevel: difficultyLevel,
+      topic: topic,
+      wordType: wordType,
+    );
   }
 
   void changeDifficulty(
     Difficulty difficulty,
     DifficultyLevel currentLevel,
     Function(DifficultyLevel) onDifficultyChanged,
+    String topic,
+    String wordType,
   ) {
     if (currentLevel.difficulty != difficulty) {
       showDialog(
@@ -66,7 +90,11 @@ class GameManager {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(); // Dialog schließen
-                  resetGame(currentLevel); // Spiel zurücksetzen
+                  resetGame(
+                    difficultyLevel: DifficultyLevel(difficulty),
+                    topic: topic,
+                    wordType: wordType,
+                  ); // Spiel zurücksetzen
                   onDifficultyChanged(DifficultyLevel(difficulty));
                 },
                 child: const Text('Proceed'),
