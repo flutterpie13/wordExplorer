@@ -3,9 +3,8 @@ import 'package:word_explorer/domain/usecases/check_card_match.dart';
 
 import 'package:word_explorer/domain/usecases/difficulty_level.dart';
 import 'package:word_explorer/presentation/widgets/flip_card.dart';
-import 'package:word_explorer/services/card_loader_service.dart';
 import '../../services/game_manager.dart';
-import '../../services/card_manager.dart';
+
 import '../../domain/entities/card.dart';
 
 class GameScreen extends StatefulWidget {
@@ -31,7 +30,6 @@ class _GameScreenState extends State<GameScreen> {
   final Set<int> _matchedCards = {}; // Gefundene Paare
   bool isInteractionLocked = false;
   List<CardModel> _cards = [];
-  late CardManager _cardManager;
   late int _selectedClass;
   late String _selectedTopic;
   late String _selectedWordType;
@@ -52,9 +50,12 @@ class _GameScreenState extends State<GameScreen> {
     _gameManager = GameManager(
       context: context,
       onCardsLoaded: (loadedCards) {
+        print(
+            'Karten erfolgreich geladen: ${_cards.map((card) => card.content).join(', ')}');
         setState(() {
           _cards = loadedCards;
         });
+        print('Geladene Karten im GameScreen: ${_cards.length}');
       },
       onGameReset: _resetGame,
       showMessage: (message) {
@@ -72,20 +73,11 @@ class _GameScreenState extends State<GameScreen> {
       topic: _selectedTopic,
       wordType: _selectedWordType,
     );
-
-    // Initialisiere CardManager und lade gefilterte Karten
-    _cardManager = CardManager();
-    _cardManager.loadCards().then((_) {
-      _loadCards();
-    });
   }
 
   void _resetGame() {
     setState(() {
-      _flippedCards.clear();
-      _matchedCards.clear();
-      isInteractionLocked = false;
-      _gameManager.loadCards(
+      _gameManager.resetGame(
         difficultyLevel: _difficultyLevel,
         topic: _selectedTopic,
         wordType: _selectedWordType,
@@ -101,39 +93,6 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _updateTopic(String newTopic) {
-    setState(() {
-      _selectedTopic = newTopic;
-    });
-    _gameManager.resetGame(
-      difficultyLevel: _difficultyLevel,
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
-  }
-
-  void _updateWordType(String newWordType) {
-    setState(() {
-      _selectedWordType = newWordType;
-    });
-    _gameManager.resetGame(
-      difficultyLevel: _difficultyLevel,
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
-  }
-
-  void _updateDifficulty(String newDifficulty) {
-    setState(() {
-      _selectedDifficulty = newDifficulty;
-    });
-    _gameManager.resetGame(
-      difficultyLevel: _difficultyLevel,
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
-  }
-
   void _changeDifficulty(Difficulty difficulty) {
     _gameManager.changeDifficulty(
       difficulty,
@@ -143,86 +102,37 @@ class _GameScreenState extends State<GameScreen> {
           _difficultyLevel = newLevel;
           _checkCardMatch = CheckCardMatch(newLevel);
         });
-
-        // Lade Karten basierend auf den aktuellen Filtern
-        _gameManager.loadCards(
-          difficultyLevel: _difficultyLevel,
-          topic: _selectedTopic,
-          wordType: _selectedWordType,
-        );
       },
-      _selectedTopic, // Aktuelles Thema übergeben
-      _selectedWordType, // Aktuelle Wortart übergeben
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
     );
   }
 
-  void _loadCards({
-    int? classLevel,
-    String? topic,
-    String? wordType,
-  }) async {
-    final CardLoaderService cardLoaderService = CardLoaderService();
-    final allCards = await cardLoaderService.loadCards();
-
-    setState(() {
-      _cards = allCards.where((card) {
-        final matchesClass =
-            classLevel == null || card.classLevel == classLevel;
-        final matchesTopic =
-            topic == null || topic == 'all' || card.topic == topic;
-        final matchesWordType =
-            wordType == null || wordType == 'all' || card.wordType == wordType;
-
-        return matchesClass && matchesTopic && matchesWordType;
-      }).toList();
-      _cards.shuffle();
-    });
-  }
-
   void _checkMatch() {
-    if (_flippedCards.length == 2) {
-      final firstIndex = _flippedCards.first;
-      final secondIndex = _flippedCards.last;
+    final flippedCards = _gameManager.flippedCards.toList();
 
-      final card1 = _cards[firstIndex];
-      final card2 = _cards[secondIndex];
+    // Prüfen, ob genügend Karten umgedreht sind
+    if (flippedCards.length != 2) {
+      print('Nicht genügend Karten zum Überprüfen: $flippedCards');
+      return;
+    }
 
-      final result = _checkCardMatch.execute(card1, card2);
-      final message = result ? 'Match!' : 'No Match!';
+    // Überprüfen, ob die Indizes innerhalb des gültigen Bereichs liegen
+    if (flippedCards[0] >= _cards.length || flippedCards[1] >= _cards.length) {
+      print('Ungültige Indizes: ${flippedCards[0]}, ${flippedCards[1]}');
+      return;
+    }
 
-      if (result) {
-        _matchedCards.addAll([firstIndex, secondIndex]);
-        _flippedCards.clear();
-        isInteractionLocked = false;
-
-        // Zeige die Zeitformen nur ab Schwierigkeitsgrad "Medium"
-        if (_difficultyLevel.difficulty != Difficulty.easy) {
-          _showTimeFormQuestion(_cards[firstIndex].content);
-        }
-      } else {
-        isInteractionLocked = true;
-      }
-
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {
-                  if (!result) {
-                    _flippedCards.clear();
-                    isInteractionLocked = false;
-                  }
-                });
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+    if (flippedCards.length == 2) {
+      _gameManager.checkMatch(
+        checkCardMatch: _checkCardMatch,
+        firstIndex: flippedCards[0],
+        secondIndex: flippedCards[1],
       );
+
+      setState(() {
+        _flippedCards.clear();
+      });
     }
   }
 
@@ -377,9 +287,24 @@ class _GameScreenState extends State<GameScreen> {
     _cards.shuffle(); // Zufällige Reihenfolge der Karten
   }
 
+  int _getCrossAxisCount(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = 80.0; // Breite einer Karte
+    return (screenWidth / cardWidth).floor();
+  }
+
+  int _calculateMaxPairs(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = 80.0; // Breite einer Karte (z. B. 80px)
+    final cardsPerRow = (screenWidth / cardWidth).floor();
+
+    return cardsPerRow * 2; // Paare basierend auf Zeilenanzahl
+  }
+
   @override
   Widget build(BuildContext context) {
     int crossAxisCount = MediaQuery.of(context).size.width > 600 ? 6 : 4;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Word Explorer'),
@@ -509,37 +434,36 @@ class _GameScreenState extends State<GameScreen> {
           children: [
             _buildScoreboard(),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  childAspectRatio: 3 / 4,
-                ),
-                itemCount: _cards.length,
-                itemBuilder: (context, index) {
-                  final card = _cards[index];
-                  return FlipCard(
-                    frontContent: card.content,
-                    isFlipped: _flippedCards.contains(index) ||
-                        _matchedCards.contains(index),
-                    onTap: () {
-                      if (isInteractionLocked)
-                        return; // Blockiere weitere Interaktionen
+              child: _cards.isEmpty
+                  ? const Center(child: Text('Keine Karten verfügbar'))
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: _getCrossAxisCount(context),
+                        childAspectRatio: 3 / 4,
+                      ),
+                      itemCount: _cards.length,
+                      itemBuilder: (context, index) {
+                        final card = _cards[index];
+                        return FlipCard(
+                          frontContent: card.content,
+                          isFlipped: _flippedCards.contains(index) ||
+                              _matchedCards.contains(index),
+                          onTap: () {
+                            if (_gameManager.isInteractionLocked() ||
+                                _gameManager.flippedCards.contains(index)) {
+                              return;
+                            }
 
-                      setState(() {
-                        if (_flippedCards.contains(index)) {
-                          _flippedCards.remove(index);
-                        } else {
-                          _flippedCards.add(index);
-                        }
-
-                        if (_flippedCards.length == 2) {
-                          _checkMatch();
-                        }
-                      });
-                    },
-                  );
-                },
-              ),
+                            setState(() {
+                              _gameManager.toggleCard(index);
+                              if (_gameManager.flippedCards.length == 2) {
+                                _checkMatch();
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
         ),
