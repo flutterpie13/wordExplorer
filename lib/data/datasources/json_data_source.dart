@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../../domain/entities/card.dart';
+import 'dart:developer';
 
 class JsonDataSource {
   Future<List<CardModel>> loadCardPairs() async {
@@ -10,9 +11,9 @@ class JsonDataSource {
       final List<dynamic> jsonData = json.decode(jsonString);
 
       return jsonData.map((json) => CardModel.fromJson(json)).toList();
-    } catch (e) {
-      print('Fehler beim Laden der JSON-Daten: $e');
-      return [];
+    } catch (e, stackTrace) {
+      log('Fehler beim Laden der JSON-Daten: $e', stackTrace: stackTrace);
+      rethrow; // Exception weitergeben
     }
   }
 }

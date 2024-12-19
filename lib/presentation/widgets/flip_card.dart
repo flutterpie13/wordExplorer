@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
 class FlipCard extends StatefulWidget {
   final String frontContent; // Inhalt der Vorderseite (Wort oder Szene)
@@ -24,11 +25,16 @@ class _FlipCardState extends State<FlipCard>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+    try {
+      _controller = AnimationController(
+        duration: const Duration(milliseconds: 500),
+        vsync: this,
+      );
+      _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+    } catch (e, stackTrace) {
+      log('Fehler beim Initialisieren der Animation: $e',
+          stackTrace: stackTrace);
+    }
   }
 
   @override

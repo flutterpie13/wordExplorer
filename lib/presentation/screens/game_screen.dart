@@ -1,11 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:word_explorer/domain/usecases/check_card_match.dart';
-
+import 'package:word_explorer/services/game_manager.dart';
 import 'package:word_explorer/domain/usecases/difficulty_level.dart';
+import 'package:word_explorer/domain/entities/card.dart';
 import 'package:word_explorer/presentation/widgets/flip_card.dart';
-import '../../services/game_manager.dart';
-
-import '../../domain/entities/card.dart';
 
 class GameScreen extends StatefulWidget {
   final int selectedClass;
@@ -14,26 +14,25 @@ class GameScreen extends StatefulWidget {
   final String selectedDifficulty;
 
   GameScreen({
+    Key? key,
     required this.selectedClass,
     required this.selectedTopic,
     required this.selectedWordType,
     required this.selectedDifficulty,
-  });
+  }) : super(key: key);
   @override
-  _GameScreenState createState() => _GameScreenState();
+  GameScreenState createState() => GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class GameScreenState extends State<GameScreen> {
   DifficultyLevel _difficultyLevel = DifficultyLevel(Difficulty.easy);
   late CheckCardMatch _checkCardMatch;
   final Set<int> _flippedCards = {}; // Bereits aufgedeckte Karten
   final Set<int> _matchedCards = {}; // Gefundene Paare
   bool isInteractionLocked = false;
   List<CardModel> _cards = [];
-  late int _selectedClass;
   late String _selectedTopic;
   late String _selectedWordType;
-  late String _selectedDifficulty;
   late GameManager _gameManager;
 
   @override
@@ -41,10 +40,8 @@ class _GameScreenState extends State<GameScreen> {
     super.initState();
 
     // Initialisiere die Variablen zuerst
-    _selectedClass = widget.selectedClass;
     _selectedTopic = widget.selectedTopic;
     _selectedWordType = widget.selectedWordType;
-    _selectedDifficulty = widget.selectedDifficulty;
 
     // Initialisiere GameManager
     _gameManager = GameManager(
@@ -68,11 +65,18 @@ class _GameScreenState extends State<GameScreen> {
     _checkCardMatch = CheckCardMatch(_difficultyLevel);
 
     // Lade Karten basierend auf den aktuellen Filtern
-    _gameManager.loadCards(
-      difficultyLevel: _difficultyLevel,
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
+    try {
+      _gameManager.loadCards(
+        difficultyLevel: _difficultyLevel,
+        topic: _selectedTopic,
+        wordType: _selectedWordType,
+      );
+    } catch (e, stackTrace) {
+      log('Fehler beim Laden der Karten: $e', stackTrace: stackTrace);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fehler beim Laden der Karten: $e')),
+      );
+    }
   }
 
   void _resetGame() {
@@ -124,11 +128,18 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     if (flippedCards.length == 2) {
-      _gameManager.checkMatch(
-        checkCardMatch: _checkCardMatch,
-        firstIndex: flippedCards[0],
-        secondIndex: flippedCards[1],
-      );
+      try {
+        _gameManager.checkMatch(
+          checkCardMatch: _checkCardMatch,
+          firstIndex: flippedCards[0],
+          secondIndex: flippedCards[1],
+        );
+      } catch (e, stackTrace) {
+        log('Fehler beim Überprüfen von Matches: $e', stackTrace: stackTrace);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Fehler beim Überprüfen von Matches')),
+        );
+      }
 
       setState(() {
         _flippedCards.clear();
@@ -161,36 +172,6 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showResetWarningDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Fortschritt wird zurückgesetzt'),
-          content: const Text(
-            'Wenn Sie die Änderungen speichern, wird der aktuelle Spielfortschritt verloren gehen. Möchten Sie fortfahren?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Schließe den Dialog
-              },
-              child: const Text('Abbrechen'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Schließe den Warnungsdialog
-                Navigator.of(context).pop(); // Schließe den Anpassungsdialog
-                _resetGame(); // Setze das Spiel zurück
-              },
-              child: const Text('Fortfahren'),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -275,30 +256,14 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _toggleCard(int index) {
-    if (_flippedCards.contains(index)) {
-      _flippedCards.remove(index);
-    } else {
-      _flippedCards.add(index);
-    }
-  }
-
   void shuffleCards() {
     _cards.shuffle(); // Zufällige Reihenfolge der Karten
   }
 
   int _getCrossAxisCount(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = 80.0; // Breite einer Karte
+    const cardWidth = 80.0; // Breite einer Karte
     return (screenWidth / cardWidth).floor();
-  }
-
-  int _calculateMaxPairs(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = 80.0; // Breite einer Karte (z. B. 80px)
-    final cardsPerRow = (screenWidth / cardWidth).floor();
-
-    return cardsPerRow * 2; // Paare basierend auf Zeilenanzahl
   }
 
   @override
@@ -445,21 +410,34 @@ class _GameScreenState extends State<GameScreen> {
                       itemBuilder: (context, index) {
                         final card = _cards[index];
                         return FlipCard(
-                          frontContent: card.content,
-                          isFlipped: _flippedCards.contains(index) ||
-                              _matchedCards.contains(index),
+                          frontContent: card.content.isNotEmpty
+                              ? card.content
+                              : 'Unbekannt',
+                          isFlipped:
+                              _gameManager.flippedCards.contains(index) ||
+                                  _gameManager.matchedCards.contains(index),
                           onTap: () {
                             if (_gameManager.isInteractionLocked() ||
                                 _gameManager.flippedCards.contains(index)) {
-                              return;
+                              return; // Keine weitere Aktion erlaubt
                             }
 
-                            setState(() {
-                              _gameManager.toggleCard(index);
-                              if (_gameManager.flippedCards.length == 2) {
-                                _checkMatch();
-                              }
-                            });
+                            try {
+                              setState(() {
+                                _gameManager.toggleCard(index);
+                                if (_gameManager.flippedCards.length == 2) {
+                                  _checkMatch();
+                                }
+                              });
+                            } catch (e, stackTrace) {
+                              log('Fehler beim Interagieren mit der Karte: $e',
+                                  stackTrace: stackTrace);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Fehler bei der Karteninteraktion')),
+                              );
+                            }
                           },
                         );
                       },

@@ -1,11 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:word_explorer/presentation/screens/home_screen.dart';
 
 void main() {
-  runApp(WordExplorerApp());
+  FlutterError.onError = (FlutterErrorDetails details) {
+    log('FlutterError: ${details.exceptionAsString()}',
+        stackTrace: details.stack);
+  };
+  runApp(const MyApp());
 }
 
-class WordExplorerApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key); // Key hinzugefügt
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,7 +22,7 @@ class WordExplorerApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(), // Hinzufügen von const
     );
   }
 }

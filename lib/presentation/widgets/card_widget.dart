@@ -82,7 +82,7 @@ class _FlipCardState extends State<FlipCard>
                         alignment: Alignment.center,
                         child: Text(
                           widget.backText, // Zeige Text statt Bild
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

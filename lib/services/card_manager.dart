@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../domain/entities/card.dart';
 
-/*class CardManager {
+class CardManager {
   final List<CardModel> _allCards = [];
 
   Future<void> loadCards() async {
@@ -36,4 +36,4 @@ import '../domain/entities/card.dart';
       return matchesClass && matchesTopic && matchesWordType;
     }).toList();
   }
-}*/
+}
