@@ -1,21 +1,30 @@
-import 'package:word_explorer/domain/entities/card.dart';
-import '../../domain/repositories/card_repository.dart';
 import '../datasources/json_data_source.dart';
-import 'dart:developer';
+import '../../domain/entities/card.dart';
+import '../../domain/repositories/card_repository.dart';
 
 class CardRepositoryImpl implements CardRepository {
-  final JsonDataSource jsonDataSource;
+  final JsonDataSource? jsonDataSource;
 
   CardRepositoryImpl(this.jsonDataSource);
 
   @override
   Future<List<CardModel>> getCardPairs() async {
+    if (jsonDataSource == null) {
+      print('JsonDataSource ist nicht initialisiert.');
+      return [];
+    }
+
     try {
-      return await jsonDataSource.loadCardPairs();
+      final cardPairs = await jsonDataSource!.loadCardPairs();
+      if (cardPairs.isEmpty) {
+        print('Keine Kartenpaare gefunden.');
+        return [];
+      }
+      return cardPairs;
     } catch (e, stackTrace) {
-      log('Fehler im CardRepository beim Abrufen von Karten: $e',
-          stackTrace: stackTrace);
-      rethrow; // Exception weitergeben
+      print('Fehler beim Laden der Kartenpaare: $e');
+      print(stackTrace);
+      return []; // Fallback: Leere Liste
     }
   }
 }

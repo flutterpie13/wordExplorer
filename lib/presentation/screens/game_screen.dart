@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:word_explorer/domain/usecases/check_card_match.dart';
-import 'package:word_explorer/services/game_manager.dart';
 import 'package:word_explorer/domain/usecases/difficulty_level.dart';
-import 'package:word_explorer/domain/entities/card.dart';
 import 'package:word_explorer/presentation/widgets/flip_card.dart';
+import '../../services/game_manager.dart';
+import '../../domain/entities/card.dart';
 
 class GameScreen extends StatefulWidget {
   final int selectedClass;
@@ -14,45 +14,38 @@ class GameScreen extends StatefulWidget {
   final String selectedDifficulty;
 
   GameScreen({
-    Key? key,
     required this.selectedClass,
     required this.selectedTopic,
     required this.selectedWordType,
     required this.selectedDifficulty,
-  }) : super(key: key);
+  });
+
   @override
-  GameScreenState createState() => GameScreenState();
+  _GameScreenState createState() => _GameScreenState();
 }
 
-class GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen> {
   DifficultyLevel _difficultyLevel = DifficultyLevel(Difficulty.easy);
   late CheckCardMatch _checkCardMatch;
-  final Set<int> _flippedCards = {}; // Bereits aufgedeckte Karten
-  final Set<int> _matchedCards = {}; // Gefundene Paare
-  bool isInteractionLocked = false;
+  late GameManager _gameManager;
+
   List<CardModel> _cards = [];
+  bool _isInteractionLocked = false;
+
   late String _selectedTopic;
   late String _selectedWordType;
-  late GameManager _gameManager;
 
   @override
   void initState() {
     super.initState();
+    _checkCardMatch = CheckCardMatch(_difficultyLevel);
 
-    // Initialisiere die Variablen zuerst
-    _selectedTopic = widget.selectedTopic;
-    _selectedWordType = widget.selectedWordType;
-
-    // Initialisiere GameManager
     _gameManager = GameManager(
       context: context,
       onCardsLoaded: (loadedCards) {
-        print(
-            'Karten erfolgreich geladen: ${_cards.map((card) => card.content).join(', ')}');
         setState(() {
           _cards = loadedCards;
         });
-        print('Geladene Karten im GameScreen: ${_cards.length}');
       },
       onGameReset: _resetGame,
       showMessage: (message) {
@@ -61,26 +54,29 @@ class GameScreenState extends State<GameScreen> {
       },
     );
 
-    // Initialisiere CardMatch-Logik
-    _checkCardMatch = CheckCardMatch(_difficultyLevel);
+    _selectedTopic = widget.selectedTopic;
+    _selectedWordType = widget.selectedWordType;
 
-    // Lade Karten basierend auf den aktuellen Filtern
+    _loadCards();
+  }
+
+  Future<void> _loadCards() async {
     try {
-      _gameManager.loadCards(
+      await _gameManager.loadCards(
         difficultyLevel: _difficultyLevel,
         topic: _selectedTopic,
         wordType: _selectedWordType,
       );
-    } catch (e, stackTrace) {
-      log('Fehler beim Laden der Karten: $e', stackTrace: stackTrace);
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler beim Laden der Karten: $e')),
+        const SnackBar(content: Text('Fehler beim Laden der Karten')),
       );
     }
   }
 
   void _resetGame() {
     setState(() {
+      _isInteractionLocked = false;
       _gameManager.resetGame(
         difficultyLevel: _difficultyLevel,
         topic: _selectedTopic,
@@ -90,11 +86,7 @@ class GameScreenState extends State<GameScreen> {
   }
 
   void _updateFilters() {
-    _gameManager.loadCards(
-      difficultyLevel: _difficultyLevel,
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
+    _loadCards();
   }
 
   void _changeDifficulty(Difficulty difficulty) {
@@ -116,66 +108,42 @@ class GameScreenState extends State<GameScreen> {
     final flippedCards = _gameManager.flippedCards.toList();
 
     // Prüfen, ob genügend Karten umgedreht sind
-    if (flippedCards.length != 2) {
-      print('Nicht genügend Karten zum Überprüfen: $flippedCards');
+    if (flippedCards.isEmpty || flippedCards.length != 2) {
+      debugPrint('Nicht genügend Karten zum Überprüfen: $flippedCards');
+      return;
+    }
+    // Sicherstellen, dass die Indizes gültig sind
+    final firstIndex = flippedCards[0];
+    final secondIndex = flippedCards[1];
+    if (firstIndex >= _cards.length || secondIndex >= _cards.length) {
+      debugPrint('Ungültige Indizes: $firstIndex, $secondIndex');
       return;
     }
 
-    // Überprüfen, ob die Indizes innerhalb des gültigen Bereichs liegen
-    if (flippedCards[0] >= _cards.length || flippedCards[1] >= _cards.length) {
-      print('Ungültige Indizes: ${flippedCards[0]}, ${flippedCards[1]}');
-      return;
-    }
+    try {
+      final result = _gameManager.checkMatch(
+        checkCardMatch: _checkCardMatch,
+        firstIndex: flippedCards[0],
+        secondIndex: flippedCards[1],
+      );
 
-    if (flippedCards.length == 2) {
-      try {
-        _gameManager.checkMatch(
-          checkCardMatch: _checkCardMatch,
-          firstIndex: flippedCards[0],
-          secondIndex: flippedCards[1],
-        );
-      } catch (e, stackTrace) {
-        log('Fehler beim Überprüfen von Matches: $e', stackTrace: stackTrace);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Fehler beim Überprüfen von Matches')),
-        );
+      if (!result) {
+        // Verdeckte die Karten, wenn sie kein Match sind
+        Future.delayed(const Duration(seconds: 1), () {});
+        setState(() {
+          _gameManager.toggleCard(firstIndex, forceHide: true);
+          _gameManager.toggleCard(secondIndex, forceHide: true);
+        });
       }
-
-      setState(() {
-        _flippedCards.clear();
-      });
+    } catch (e, stackTrace) {
+      log('Fehler beim Überprüfen von Matches: $e', stackTrace: stackTrace);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Fehler beim Überprüfen von Matches')),
+      );
     }
   }
 
-  void _showTimeFormQuestion(String word) {
-    final timeForms = {
-      'go': ['went', 'gone'],
-      'run': ['ran', 'run (past participle)'],
-      'eat': ['ate', 'eaten'],
-      // Weitere Wörter hinzufügen
-    };
-
-    final forms = timeForms[word] ?? [];
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Time Forms for "$word"'),
-        content: Text(
-          forms.isNotEmpty
-              ? 'The other forms of "$word" are: ${forms.join(', ')}'
-              : 'No additional forms available for "$word".',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /*void _showAdjustDialog() {
+  void _showAdjustDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -186,26 +154,37 @@ class GameScreenState extends State<GameScreen> {
             children: [
               DropdownButton<String>(
                 value: _selectedTopic,
-                items: ['school', 'home', 'food', 'all'].map((topic) {
+                items:
+                    ['all', 'school', 'home', 'food', 'animals'].map((topic) {
                   return DropdownMenuItem<String>(
                     value: topic,
                     child: Text(topic),
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value != null) _updateTopic(value);
+                  if (value != null) {
+                    setState(() {
+                      _selectedTopic = value;
+                    });
+                    _updateFilters(); // Karten mit neuem Thema laden
+                  }
                 },
               ),
               DropdownButton<String>(
                 value: _selectedWordType,
-                items: ['noun', 'verb', 'all'].map((type) {
+                items: ['all', 'noun', 'verb', 'adjective'].map((type) {
                   return DropdownMenuItem<String>(
                     value: type,
                     child: Text(type),
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value != null) _updateWordType(value);
+                  if (value != null) {
+                    setState(() {
+                      _selectedWordType = value;
+                    });
+                    _updateFilters(); // Karten mit neuer Wortart laden
+                  }
                 },
               ),
               DropdownButton<Difficulty>(
@@ -217,59 +196,51 @@ class GameScreenState extends State<GameScreen> {
                   );
                 }).toList(),
                 onChanged: (value) {
-                  if (value != null) _updateDifficulty(value.toString());
+                  if (value != null) {
+                    _changeDifficulty(value); // Hier wird die Methode verwendet
+                  }
                 },
               ),
+              ElevatedButton(
+                onPressed: () {
+                  _gameManager.resetGame(
+                    difficultyLevel: _difficultyLevel,
+                    topic: _selectedTopic,
+                    wordType: _selectedWordType,
+                  );
+                },
+                child: const Text('Restart Game'),
+              ), // Weitere Optionen hier hinzufügen
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Schließe den Dialog
               },
               child: const Text('Abbrechen'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Schließe den Dialog
+                // Optionale Logik hier hinzufügen
               },
-              child: const Text('Anwenden'),
+              child: const Text('Speichern'),
             ),
           ],
         );
       },
     );
-  }*/
-  Widget _buildScoreboard() {
-    final totalPairs = _cards.length ~/ 2;
-    final foundPairs = _matchedCards.length ~/ 2;
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Gefundene Paare: $foundPairs'),
-          Text('Übrige Paare: ${totalPairs - foundPairs}'),
-        ],
-      ),
-    );
-  }
-
-  void shuffleCards() {
-    _cards.shuffle(); // Zufällige Reihenfolge der Karten
   }
 
   int _getCrossAxisCount(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    const cardWidth = 80.0; // Breite einer Karte
+    const cardWidth = 80.0;
     return (screenWidth / cardWidth).floor();
   }
 
   @override
   Widget build(BuildContext context) {
-    int crossAxisCount = MediaQuery.of(context).size.width > 600 ? 6 : 4;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Word Explorer'),
@@ -277,99 +248,9 @@ class GameScreenState extends State<GameScreen> {
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'exit') {
-                Navigator.of(context).pop(); // Zurück zum HomeScreen
+                Navigator.of(context).pop();
               } else if (value == 'adjust') {
-                // Öffne Optionen oder zeige einen Dialog zur Anpassung
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Spiel anpassen'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          DropdownButton<String>(
-                            value: _selectedTopic,
-                            items: ['all', 'school', 'home', 'food', 'animals']
-                                .map((topic) {
-                              return DropdownMenuItem<String>(
-                                value: topic,
-                                child: Text(topic),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  _selectedTopic = value;
-                                });
-                                _updateFilters(); // Karten mit neuem Thema laden
-                              }
-                            },
-                          ),
-                          DropdownButton<String>(
-                            value: _selectedWordType,
-                            items: ['all', 'noun', 'verb', 'adjective']
-                                .map((type) {
-                              return DropdownMenuItem<String>(
-                                value: type,
-                                child: Text(type),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  _selectedWordType = value;
-                                });
-                                _updateFilters(); // Karten mit neuer Wortart laden
-                              }
-                            },
-                          ),
-                          DropdownButton<Difficulty>(
-                            value: _difficultyLevel.difficulty,
-                            items: Difficulty.values.map((difficulty) {
-                              return DropdownMenuItem<Difficulty>(
-                                value: difficulty,
-                                child:
-                                    Text(difficulty.toString().split('.').last),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              if (value != null) {
-                                _changeDifficulty(
-                                    value); // Hier wird die Methode verwendet
-                              }
-                            },
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              _gameManager.resetGame(
-                                difficultyLevel: _difficultyLevel,
-                                topic: _selectedTopic,
-                                wordType: _selectedWordType,
-                              );
-                            },
-                            child: const Text('Restart Game'),
-                          ), // Weitere Optionen hier hinzufügen
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Schließe den Dialog
-                          },
-                          child: const Text('Abbrechen'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // Schließe den Dialog
-                            // Optionale Logik hier hinzufügen
-                          },
-                          child: const Text('Speichern'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                _showAdjustDialog();
               }
             },
             itemBuilder: (context) => [
@@ -385,66 +266,41 @@ class GameScreenState extends State<GameScreen> {
           )
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          // Überprüfe, ob zwei Karten offen sind
-          if (isInteractionLocked && _flippedCards.length == 2) {
-            setState(() {
-              _flippedCards.clear(); // Verdecke die Karten
-              isInteractionLocked = false; // Entsperre Aktionen
-            });
-          }
-        },
-        child: Column(
-          children: [
-            _buildScoreboard(),
-            Expanded(
-              child: _cards.isEmpty
-                  ? const Center(child: Text('Keine Karten verfügbar'))
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: _getCrossAxisCount(context),
-                        childAspectRatio: 3 / 4,
-                      ),
-                      itemCount: _cards.length,
-                      itemBuilder: (context, index) {
-                        final card = _cards[index];
-                        return FlipCard(
-                          frontContent: card.content.isNotEmpty
-                              ? card.content
-                              : 'Unbekannt',
-                          isFlipped:
-                              _gameManager.flippedCards.contains(index) ||
-                                  _gameManager.matchedCards.contains(index),
-                          onTap: () {
-                            if (_gameManager.isInteractionLocked() ||
-                                _gameManager.flippedCards.contains(index)) {
-                              return; // Keine weitere Aktion erlaubt
-                            }
-
-                            try {
-                              setState(() {
-                                _gameManager.toggleCard(index);
-                                if (_gameManager.flippedCards.length == 2) {
-                                  _checkMatch();
-                                }
-                              });
-                            } catch (e, stackTrace) {
-                              log('Fehler beim Interagieren mit der Karte: $e',
-                                  stackTrace: stackTrace);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Fehler bei der Karteninteraktion')),
-                              );
-                            }
-                          },
-                        );
-                      },
+      body: Column(
+        children: [
+          Expanded(
+            child: _cards.isEmpty
+                ? const Center(child: Text('Keine Karten verfügbar'))
+                : GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: _getCrossAxisCount(context),
+                      childAspectRatio: 3 / 4,
                     ),
-            ),
-          ],
-        ),
+                    itemCount: _cards.length,
+                    itemBuilder: (context, index) {
+                      final card = _cards[index];
+                      return FlipCard(
+                        frontContent: card.content,
+                        isFlipped: _gameManager.flippedCards.contains(index) ||
+                            _gameManager.matchedCards.contains(index),
+                        onTap: () {
+                          if (_gameManager.isInteractionLocked() ||
+                              _gameManager.flippedCards.contains(index)) {
+                            return;
+                          }
+
+                          setState(() {
+                            _gameManager.toggleCard(index);
+                            if (_gameManager.flippedCards.length == 2) {
+                              _checkMatch();
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
