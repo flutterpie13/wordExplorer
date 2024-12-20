@@ -10,22 +10,24 @@ class GameManager {
   final BuildContext context;
   final Function(List<CardModel>) onCardsLoaded;
   final Function() onGameReset;
-  final Function(String) showMessage;
+  //final Function(String) showMessage;
+  final dynamic showInfo;
   bool _isGameOver = false;
-
   bool isGameOver() => _isGameOver;
+
+  bool _isInteractionLocked = false;
+  bool isInteractionLocked() => _isInteractionLocked;
 
   List<CardModel> _cards = [];
   final Map<CardModel, CardStatus> _cardStatuses = {};
   CardModel? firstCard;
   CardModel? secondCard;
-  bool _isInteractionLocked = false;
-  bool isInteractionLocked() => _isInteractionLocked;
+
   GameManager({
     required this.context,
     required this.onCardsLoaded,
     required this.onGameReset,
-    required this.showMessage,
+    required this.showInfo,
   });
 
   Future<void> loadCards({
@@ -75,48 +77,42 @@ class GameManager {
 
   void onCardTap(CardModel card) {
     if (_isInteractionLocked ||
-        _isGameOver ||
         _cardStatuses[card] == CardStatus.open ||
         _cardStatuses[card] == CardStatus.match) {
-      return;
+      return; // Verhindert Interaktionen während der Sperre
     }
-
+    // Erste Karte aufdecken
     if (firstCard == null) {
-      // Erste Karte aufdecken
       firstCard = card;
-      _cardStatuses[card] = CardStatus.open;
+      _updateCardStatus(card, CardStatus.open);
       onCardsLoaded(_cards);
       return;
     }
-
     // Zweite Karte auswählen
     if (secondCard == null && card != firstCard) {
       secondCard = card;
-      _cardStatuses[card] = CardStatus.open;
+      _updateCardStatus(card, CardStatus.open);
       onCardsLoaded(_cards); // UI aktualisieren
-
+      _isInteractionLocked = true;
       // Match prüfen
       if (firstCard!.pairId == secondCard!.pairId) {
         // Karten matchen
-        _cardStatuses[firstCard!] = CardStatus.match;
-        _cardStatuses[secondCard!] = CardStatus.match;
+        _updateCardStatus(card, CardStatus.match);
+        _updateCardStatus(card, CardStatus.match);
         showMessage('Match gefunden!');
-
         resetSelection();
-        checkWinCondition();
       } else {
         // Kein Match - Interaktion für den nächsten Tap sperren
-        _isInteractionLocked = true;
         showMessage('Kein Match! Tippe erneut, um die Karten zu verdecken.');
-        _isInteractionLocked = false; // Interaktion freigeben
       }
+      _isInteractionLocked = false;
+      checkWinCondition();
       return;
     }
-
     // Wenn es kein Match war, verdecke beide Karten beim nächsten Tap
     if (firstCard != null && secondCard != null) {
-      _cardStatuses[firstCard!] = CardStatus.close;
-      _cardStatuses[secondCard!] = CardStatus.close;
+      _updateCardStatus(card, CardStatus.close);
+      _updateCardStatus(card, CardStatus.close);
       resetSelection();
       _isInteractionLocked = false; // Interaktion freigeben
       onCardsLoaded(_cards); // UI aktualisieren
@@ -143,21 +139,26 @@ class GameManager {
     required DifficultyLevel difficultyLevel,
     required String topic,
     required String wordType,
-  }) {
+  }) async {
+    // Spielstatus zurücksetzen
+    _isGameOver = false;
     firstCard = null;
     secondCard = null;
     _isInteractionLocked = false;
 
-    for (final card in _cards) {
-      _cardStatuses[card] = CardStatus.close;
-    }
+    // Asynchrones Zurücksetzen der Kartenstatus
+    await Future.microtask(() {
+      for (final card in _cards) {
+        _cardStatuses[card] = CardStatus.close;
+      }
+    });
 
     loadCards(
         difficultyLevel: difficultyLevel, topic: topic, wordType: wordType);
     onGameReset();
   }
 
-  void checkMatch() {
+  /* void checkMatch() {
     if (firstCard == null || secondCard == null) {
       return;
     }
@@ -172,7 +173,7 @@ class GameManager {
       _cardStatuses[secondCard!] = CardStatus.close;
       showMessage('No Match!');
     }
-  }
+  }*/
 
   Set<int> get flippedCards => _cardStatuses.entries
       .where((entry) => entry.value == CardStatus.open)
@@ -202,7 +203,9 @@ class GameManager {
   }
 
   void shuffleCards() {
-    _cards.shuffle(); // Zufällige Reihenfolge der Karten
+    if (!_isGameOver) {
+      _cards.shuffle();
+    } // Zufällige Reihenfolge der Karten
   }
 
   void checkWinCondition() {
@@ -214,6 +217,30 @@ class GameManager {
       _isGameOver = true; // Setze den Spielstatus auf beendet
       showMessage('Glückwunsch! Du hast alle Paare gefunden!');
     }
+    _isInteractionLocked = false;
+  }
+
+  void _updateCardStatus(CardModel card, CardStatus status) {
+    if (_cardStatuses[card] == CardStatus.match) {
+      // Karten, die bereits ein Match sind, dürfen nicht mehr geändert werden
+      return;
+    }
+    _cardStatuses[card] = status;
+    // UI nur für den spezifischen Bereich aktualisieren
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      onCardsLoaded(_cards);
+    });
+  }
+
+  void showMessage(dynamic message) {
+    ScaffoldMessenger.of(context)
+        .clearSnackBars(); // Alte Nachrichten entfernen
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message.toString()),
+        duration: const Duration(seconds: 1), // Kürzere Anzeigedauer
+      ),
+    );
   }
 
   void changeDifficulty(

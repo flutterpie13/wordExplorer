@@ -63,10 +63,7 @@ class _GameScreenState extends State<GameScreen> {
         });
       },
       onGameReset: () => _resetGame(),
-      showMessage: (message) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(message)));
-      },
+      showInfo: (message) => _gameManager.showMessage(message),
     );
 
     // Initialisiere CardMatch-Logik
@@ -88,6 +85,10 @@ class _GameScreenState extends State<GameScreen> {
         const SnackBar(content: Text('Fehler beim Laden der Karten')),
       );
     }
+  }
+
+  void _showMassage(String message) {
+    _gameManager.showMessage(message);
   }
 
   void _resetGame() {
@@ -259,6 +260,7 @@ class _GameScreenState extends State<GameScreen> {
                         crossAxisCount: _getCrossAxisCount(context),
                         childAspectRatio: 3 / 4,
                       ),
+                      cacheExtent: 100.0,
                       itemCount: _cards.length,
                       itemBuilder: (context, index) {
                         final card = _cards[index];
@@ -268,7 +270,8 @@ class _GameScreenState extends State<GameScreen> {
                               _gameManager.flippedCards.contains(index) ||
                                   _gameManager.matchedCards.contains(index),
                           onTap: () {
-                            if (!_gameManager.isGameOver()) {
+                            if (!_gameManager.isInteractionLocked()) {
+                              // Interaktionssperre überprüfen
                               setState(() {
                                 _gameManager.onCardTap(card);
                               });

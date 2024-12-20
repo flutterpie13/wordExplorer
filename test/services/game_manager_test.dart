@@ -112,7 +112,28 @@ void main() {
       expect(allMatched, true);
     });
 
-    test('Gewinnbedingung erfüllt, wenn alle Karten matched sind', () {});
+    testWidgets('Rset nach gewonnenem Spiel.', (WidgetTester tester) async {
+      // BuildContext initialisieren
+      final gameManager = await initializeBuildContext(
+        tester,
+        cards: cards,
+      );
+      // Simuliere ein gewonnenes Spiel
+      gameManager.onCardTap(cards[0]);
+      gameManager.onCardTap(cards[1]);
+      gameManager.checkWinCondition();
+
+      expect(gameManager.isGameOver(), true);
+
+      // Spiel zurücksetzen
+      gameManager.resetGame(
+        difficultyLevel: DifficultyLevel(Difficulty.easy),
+        topic: 'all',
+        wordType: 'all',
+      );
+
+      expect(gameManager.isGameOver(), false); // Spielstatus ist zurückgesetzt
+    });
   });
 
   group('Änderung der Einstellungen', () {
