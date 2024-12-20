@@ -2,7 +2,7 @@
   final int pairId;
   final String content;
   final bool isScene;
-  final int classLevel;
+  final int class;
   final String topic;
   final String wordType;
 
@@ -10,7 +10,7 @@
       {required this.pairId,
       required this.content,
       required this.isScene,
-      required this.classLevel,
+      required this.class,
       required this.topic,
       required this.wordType});
 
@@ -19,7 +19,7 @@
       pairId: json['pairId'] as int,
       content: json['content'] as String,
       isScene: json['isScene'] as bool,
-      classLevel: json['classLevel'] as int,
+      class: json['class'] as int,
       topic: json['topic'] as String,
       wordType: json['wordType'] as String,
     );

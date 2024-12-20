@@ -16,7 +16,7 @@ class CardManager {
         pairId: item['pairId'],
         content: item['content'],
         isScene: item['isScene'],
-        classLevel: item['class'],
+        classLevel: item['classLevel'],
         topic: item['topic'],
         wordType: item['wordType'],
       );

@@ -3,7 +3,7 @@
       "pairId": 1,
       "content": "dog",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -11,7 +11,7 @@
       "pairId": 1,
       "content": "A dog runs after the ball.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -19,7 +19,7 @@
       "pairId": 2,
       "content": "cat",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -27,7 +27,7 @@
       "pairId": 2,
       "content": "The cat sleeps on the pillow.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -35,7 +35,7 @@
       "pairId": 3,
       "content": "elephant",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -43,7 +43,7 @@
       "pairId": 3,
       "content": "The elephant is big and gray.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -51,7 +51,7 @@
       "pairId": 4,
       "content": "bird",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -59,7 +59,7 @@
       "pairId": 4,
       "content": "The bird sings in the tree.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -67,7 +67,7 @@
       "pairId": 5,
       "content": "fish",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -75,7 +75,7 @@
       "pairId": 5,
       "content": "The fish swims in the water.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -83,7 +83,7 @@
       "pairId": 6,
       "content": "rabbit",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -91,7 +91,7 @@
       "pairId": 6,
       "content": "The rabbit eats a carrot.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -99,7 +99,7 @@
       "pairId": 7,
       "content": "frog",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -107,7 +107,7 @@
       "pairId": 7,
       "content": "The frog jumps into the water.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -115,7 +115,7 @@
       "pairId": 8,
       "content": "cow",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -123,7 +123,7 @@
       "pairId": 8,
       "content": "The cow gives milk every morning.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -131,7 +131,7 @@
       "pairId": 9,
       "content": "sheep",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -139,7 +139,7 @@
       "pairId": 9,
       "content": "The sheep are in the meadow.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -147,7 +147,7 @@
       "pairId": 10,
       "content": "tiger",
       "isScene": false,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -155,7 +155,7 @@
       "pairId": 10,
       "content": "The tiger walks in the jungle.",
       "isScene": true,
-      "class": 5,
+      "classLevel": 5,
       "topic": "tiere",
       "wordType": "noun"
   },
@@ -163,7 +163,7 @@
     "pairId": 11,
     "content": "to fly",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -171,7 +171,7 @@
     "pairId": 11,
     "content": "The bird flies in the sky.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -179,7 +179,7 @@
     "pairId": 12,
     "content": "to jump",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -187,7 +187,7 @@
     "pairId": 12,
     "content": "The rabbit jumps fast.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -195,7 +195,7 @@
     "pairId": 13,
     "content": "to swim",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -203,7 +203,7 @@
     "pairId": 13,
     "content": "The dolphin swims in the sea.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -211,7 +211,7 @@
     "pairId": 14,
     "content": "to run",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -219,7 +219,7 @@
     "pairId": 14,
     "content": "The horse runs on the field.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -227,7 +227,7 @@
     "pairId": 15,
     "content": "to climb",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -235,7 +235,7 @@
     "pairId": 15,
     "content": "The monkey climbs the tree.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -243,7 +243,7 @@
     "pairId": 16,
     "content": "to bark",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -251,7 +251,7 @@
     "pairId": 16,
     "content": "The dog barks at the mailman.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -259,7 +259,7 @@
     "pairId": 17,
     "content": "to purr",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -267,7 +267,7 @@
     "pairId": 17,
     "content": "The cat purrs when happy.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -275,7 +275,7 @@
     "pairId": 8,
     "content": "to roar",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -283,7 +283,7 @@
     "pairId": 18,
     "content": "The lion roars loudly.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -291,7 +291,7 @@
     "pairId": 19,
     "content": "to chirp",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -299,7 +299,7 @@
     "pairId": 19,
     "content": "The bird chirps in the morning.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -307,7 +307,7 @@
     "pairId": 20,
     "content": "to hunt",
     "isScene": false,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -315,7 +315,7 @@
     "pairId": 20,
     "content": "The fox hunts for food.",
     "isScene": true,
-    "class": 5,
+    "classLevel": 5,
     "topic": "tiere",
     "wordType": "verb"
 },
@@ -323,7 +323,7 @@
   "pairId": 21,
   "content": "fast",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -331,7 +331,7 @@
   "pairId": 21,
   "content": "The cheetah is very fast.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -339,7 +339,7 @@
   "pairId": 22,
   "content": "small",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -347,7 +347,7 @@
   "pairId": 22,
   "content": "The mouse is small and gray.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -355,7 +355,7 @@
   "pairId": 23,
   "content": "big",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -363,7 +363,7 @@
   "pairId": 23,
   "content": "The whale is very big.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -371,7 +371,7 @@
   "pairId": 24,
   "content": "cute",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -379,7 +379,7 @@
   "pairId": 24,
   "content": "The puppy is so cute.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -387,7 +387,7 @@
   "pairId": 25,
   "content": "wild",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -395,7 +395,7 @@
   "pairId": 25,
   "content": "The lion is wild and strong.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -403,7 +403,7 @@
   "pairId": 26,
   "content": "furry",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -411,7 +411,7 @@
   "pairId": 26,
   "content": "The dog has soft, furry ears.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -419,7 +419,7 @@
   "pairId": 27,
   "content": "colorful",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -427,7 +427,7 @@
   "pairId": 27,
   "content": "The parrot is colorful and beautiful.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -435,7 +435,7 @@
   "pairId": 28,
   "content": "dangerous",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -443,7 +443,7 @@
   "pairId": 28,
   "content": "The snake is dangerous.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -451,7 +451,7 @@
   "pairId": 29,
   "content": "friendly",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -459,7 +459,7 @@
   "pairId": 29,
   "content": "A dolphin jumps out of the water.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -467,7 +467,7 @@
   "pairId": 30,
   "content": "noisy",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 },
@@ -475,14 +475,14 @@
   "pairId": 30,
   "content": "The monkeys in the zoo are noisy.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "tiere",
   "wordType": "adjektive"
 }, {
   "pairId": 31,
   "content": "apple",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -490,7 +490,7 @@
   "pairId": 31,
   "content": "I eat an apple every day.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -498,7 +498,7 @@
   "pairId": 32,
   "content": "pizza",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -506,7 +506,7 @@
   "pairId": 32,
   "content": "We love to eat pizza together.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -514,7 +514,7 @@
   "pairId": 33,
   "content": "bread",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -522,7 +522,7 @@
   "pairId": 33,
   "content": "The baker makes fresh bread.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -530,7 +530,7 @@
   "pairId": 34,
   "content": "milk",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -538,7 +538,7 @@
   "pairId": 34,
   "content": "I drink a glass of milk.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -546,7 +546,7 @@
   "pairId": 35,
   "content": "chocolate",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -554,7 +554,7 @@
   "pairId": 35,
   "content": "She eats chocolate after school.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -562,7 +562,7 @@
   "pairId": 36,
   "content": "noodels",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -570,7 +570,7 @@
   "pairId": 36,
   "content": "I cook noodels.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -578,7 +578,7 @@
   "pairId": 37,
   "content": "cake",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -586,7 +586,7 @@
   "pairId": 37,
   "content": "The cake is ready.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -594,7 +594,7 @@
   "pairId": 38,
   "content": "egg",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -602,7 +602,7 @@
   "pairId": 38,
   "content": "We boil the egg in hot water.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -610,7 +610,7 @@
   "pairId": 39,
   "content": "cheese",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -618,7 +618,7 @@
   "pairId": 39,
   "content": "He eats a piece of cheese.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -626,7 +626,7 @@
   "pairId": 40,
   "content": "carrot",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },
@@ -634,14 +634,14 @@
   "pairId": 40,
   "content": "The rabbit eats a carrot",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "noun"
 },{
   "pairId": 41,
   "content": "to eat",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -649,7 +649,7 @@
   "pairId": 41,
   "content": "The child eats a sandwich.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -657,7 +657,7 @@
   "pairId": 42,
   "content": "to drink",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -665,7 +665,7 @@
   "pairId": 42,
   "content": "He drinks orange juice.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -673,7 +673,7 @@
   "pairId": 43,
   "content": "to cook",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -681,7 +681,7 @@
   "pairId": 43,
   "content": "She cooks soup for her family.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -689,7 +689,7 @@
   "pairId": 44,
   "content": "to bake",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -697,7 +697,7 @@
   "pairId": 44,
   "content": "They bake cookies together.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -705,7 +705,7 @@
   "pairId": 45,
   "content": "to share",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -713,7 +713,7 @@
   "pairId": 45,
   "content": "We share a big cake.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -721,7 +721,7 @@
   "pairId": 46,
   "content": "to slice",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -729,7 +729,7 @@
   "pairId": 46,
   "content": "He slices the bread for breakfast.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -737,7 +737,7 @@
   "pairId": 47,
   "content": "to taste",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -745,7 +745,7 @@
   "pairId": 47,
   "content": "She tastes the soup carefully.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -753,7 +753,7 @@
   "pairId": 48,
   "content": "to mix",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -761,7 +761,7 @@
   "pairId": 48,
   "content": "We mix the ingredientsfor the cake.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -769,7 +769,7 @@
   "pairId": 49,
   "content": "to buy",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -777,7 +777,7 @@
   "pairId": 49,
   "content": "They buy fresh fruits at the market.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -785,7 +785,7 @@
   "pairId": 50,
   "content": "to serve",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -793,14 +793,14 @@
   "pairId": 50,
   "content": "We share a big cake.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },{
   "pairId": 51,
   "content": "to eat",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -808,7 +808,7 @@
   "pairId": 51,
   "content": "The child eats a sandwich.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -816,7 +816,7 @@
   "pairId": 52,
   "content": "to drink",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -824,7 +824,7 @@
   "pairId": 52,
   "content": "He drinks orange juice.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -832,7 +832,7 @@
   "pairId": 53,
   "content": "to cook",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -840,7 +840,7 @@
   "pairId": 53,
   "content": "She cooks soup for her family.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -848,7 +848,7 @@
   "pairId": 54,
   "content": "to bake",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -856,7 +856,7 @@
   "pairId": 54,
   "content": "They bake cookies together.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -864,7 +864,7 @@
   "pairId": 55,
   "content": "to share",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -872,7 +872,7 @@
   "pairId": 55,
   "content": "We share a big cake.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -880,7 +880,7 @@
   "pairId": 56,
   "content": "to slice",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -888,7 +888,7 @@
   "pairId": 56,
   "content": "He slices the bread for breakfast.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -896,7 +896,7 @@
   "pairId": 57,
   "content": "to taste",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -904,7 +904,7 @@
   "pairId": 57,
   "content": "She tastes the soup carefully.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -912,7 +912,7 @@
   "pairId": 58,
   "content": "to mix",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -920,7 +920,7 @@
   "pairId": 58,
   "content": "We mix the ingredientsfor the cake.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -928,7 +928,7 @@
   "pairId": 59,
   "content": "to buy",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -936,7 +936,7 @@
   "pairId": 59,
   "content": "They buy fresh fruits at the market.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -944,7 +944,7 @@
   "pairId": 60,
   "content": "to serve",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -952,7 +952,7 @@
   "pairId": 60,
   "content": "We share a big cake.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "essen",
   "wordType": "verb"
 },
@@ -960,7 +960,7 @@
   "pairId": 61,
   "content": "book",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -968,7 +968,7 @@
   "pairId": 61,
   "content": "I read a book in the library.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -976,7 +976,7 @@
   "pairId": 62,
   "content": "pencil",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -984,7 +984,7 @@
   "pairId": 62,
   "content": "He writes with a yellow pencil.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -992,7 +992,7 @@
   "pairId": 63,
   "content": "teacher",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1000,7 +1000,7 @@
   "pairId": 63,
   "content": "The teacher explains the lesson.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1008,7 +1008,7 @@
   "pairId": 64,
   "content": "desk",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1016,7 +1016,7 @@
   "pairId": 64,
   "content": "The child sits at the desk.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1024,7 +1024,7 @@
   "pairId": 65,
   "content": "blackboard",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1032,7 +1032,7 @@
   "pairId": 65,
   "content": "The teacher writes on the blackboard.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1040,7 +1040,7 @@
   "pairId": 66,
   "content": "pupil",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1048,7 +1048,7 @@
   "pairId": 66,
   "content": "The pupil goes to school.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1056,7 +1056,7 @@
   "pairId": 67,
   "content": "school",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },
@@ -1064,14 +1064,14 @@
   "pairId": 67,
   "content": "The first day at school.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "noun"
 },{
   "pairId": 68,
   "content": "to write",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1079,7 +1079,7 @@
   "pairId": 68,
   "content": "The pupil writes in her notebook.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1087,7 +1087,7 @@
   "pairId": 69,
   "content": "to read",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1095,7 +1095,7 @@
   "pairId": 69,
   "content": "He reads a story about animals.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1103,7 +1103,7 @@
   "pairId": 70,
   "content": "to learn",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1111,7 +1111,7 @@
   "pairId": 70,
   "content": "We learn new words every day",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1119,7 +1119,7 @@
   "pairId": 71,
   "content": "to draw",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1127,7 +1127,7 @@
   "pairId": 71,
   "content": "She draws a picture of a house.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1135,7 +1135,7 @@
   "pairId": 72,
   "content": "to study",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },
@@ -1143,14 +1143,14 @@
   "pairId": 72,
   "content": "They study for the big test",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "verb"
 },{
   "pairId": 73,
   "content": "new",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1158,7 +1158,7 @@
   "pairId": 73,
   "content": "I got a new notebook.“",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1166,7 +1166,7 @@
   "pairId": 74,
   "content": "old",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1174,7 +1174,7 @@
   "pairId": 74,
   "content": "The book is old.“",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1182,7 +1182,7 @@
   "pairId": 75,
   "content": "hard",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1190,7 +1190,7 @@
   "pairId": 75,
   "content": "Math is hard, but I try my best.“",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1198,7 +1198,7 @@
   "pairId": 76,
   "content": "easy",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1206,7 +1206,7 @@
   "pairId": 76,
   "content": "This English homework is easy.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1214,7 +1214,7 @@
   "pairId": 77,
   "content": "boring",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },
@@ -1222,14 +1222,14 @@
   "pairId": 77,
   "content": "The long lesson was boring.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "schule",
   "wordType": "adjective"
 },{
   "pairId": 78,
   "content": "ball",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1237,7 +1237,7 @@
   "pairId": 78,
   "content": "They play with a ball in the park.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1245,7 +1245,7 @@
   "pairId": 79,
   "content": "bicycle",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1253,7 +1253,7 @@
   "pairId": 79,
   "content": "She rides her bicycle every morning.“",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1261,7 +1261,7 @@
   "pairId": 80,
   "content": "game",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1269,7 +1269,7 @@
   "pairId": 80,
   "content": "We play a fun board game together.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1277,7 +1277,7 @@
   "pairId": 81,
   "content": "movie",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1285,7 +1285,7 @@
   "pairId": 81,
   "content": "We watch a movie on Friday night.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1293,7 +1293,7 @@
   "pairId": 82,
   "content": "pictures",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1301,7 +1301,7 @@
   "pairId": 82,
   "content": "She takes pictures with the camera.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1309,7 +1309,7 @@
   "pairId": 83,
   "content": "park",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1317,7 +1317,7 @@
   "pairId": 83,
   "content": "We play in the park every weekend.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1325,7 +1325,7 @@
   "pairId": 84,
   "content": "beach",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1333,7 +1333,7 @@
   "pairId": 84,
   "content": "The family enjoys the sunny beach.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1341,7 +1341,7 @@
   "pairId": 85,
   "content": "ballon",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1349,7 +1349,7 @@
   "pairId": 85,
   "content": "The balloon flies away in the wind.“",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1357,7 +1357,7 @@
   "pairId": 86,
   "content": "tent",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1365,7 +1365,7 @@
   "pairId": 86,
   "content": "They sleep in a tent under the stars.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1373,7 +1373,7 @@
   "pairId": 87,
   "content": "skateboard",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1381,7 +1381,7 @@
   "pairId": 87,
   "content": "He rides his skateboard in the street.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "noun"
 },
@@ -1389,7 +1389,7 @@
   "pairId": 88,
   "content": "to play",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1397,7 +1397,7 @@
   "pairId": 88,
   "content": "They play in the park every day.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1405,7 +1405,7 @@
   "pairId": 89,
   "content": "to ride",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1413,7 +1413,7 @@
   "pairId": 89,
   "content": "She rides her bike to school.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1421,7 +1421,7 @@
   "pairId": 90,
   "content": "to watch",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1429,7 +1429,7 @@
   "pairId": 90,
   "content": "We watch a movie on Friday night.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1437,7 +1437,7 @@
   "pairId": 91,
   "content": "to take",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1445,7 +1445,7 @@
   "pairId": 91,
   "content": "She takes pictures with the camera.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1453,7 +1453,7 @@
   "pairId": 92,
   "content": "to sing ",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1461,7 +1461,7 @@
   "pairId": 92,
   "content": "They sing songs at the campfire.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1469,7 +1469,7 @@
   "pairId": 93,
   "content": "to swim",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1477,7 +1477,7 @@
   "pairId": 93,
   "content": "We swim in the lake on hot days.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1485,7 +1485,7 @@
   "pairId": 94,
   "content": "to hike",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1493,7 +1493,7 @@
   "pairId": 94,
   "content": "She hikes on a tree.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1501,7 +1501,7 @@
   "pairId": 95,
   "content": "to lough",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1509,7 +1509,7 @@
   "pairId": 95,
   "content": "The friends laugh at a funny joke.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1517,7 +1517,7 @@
   "pairId": 96,
   "content": "to relax",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1525,7 +1525,7 @@
   "pairId": 96,
   "content": "She relaxes with a book in the garden.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1533,7 +1533,7 @@
   "pairId": 97,
   "content": "to explore",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },
@@ -1541,14 +1541,14 @@
   "pairId": 97,
   "content": "We explore the forest near our home.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "verb"
 },{
   "pairId": 98,
   "content": "funny",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1556,7 +1556,7 @@
   "pairId": 98,
   "content": "The clown is very funny.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1564,7 +1564,7 @@
   "pairId": 99,
   "content": "exciting",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1572,7 +1572,7 @@
   "pairId": 99,
   "content": "The movie was very exciting.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1580,7 +1580,7 @@
   "pairId": 100,
   "content": "quiet",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1588,7 +1588,7 @@
   "pairId": 100,
   "content": "The library is very quiet.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1596,7 +1596,7 @@
   "pairId": 101,
   "content": "happy",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1604,7 +1604,7 @@
   "pairId": 101,
   "content": "He feels happy after playing with friends.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1612,7 +1612,7 @@
   "pairId": 102,
   "content": "tired",
   "isScene": false,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 },
@@ -1620,7 +1620,7 @@
   "pairId": 102,
   "content": "She feels tired after the game.",
   "isScene": true,
-  "class": 5,
+  "classLevel": 5,
   "topic": "freizeit",
   "wordType": "adjective"
 }

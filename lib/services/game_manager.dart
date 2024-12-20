@@ -1,11 +1,10 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../domain/entities/card.dart';
-import '../domain/usecases/check_card_match.dart';
 import '../domain/usecases/difficulty_level.dart';
 import 'card_loader_service.dart';
 
-enum CardStatus { verdeckt, aufgedeckt, gefunden }
+enum CardStatus { noMatch, open, match, close }
 
 class GameManager {
   final BuildContext context;
@@ -34,7 +33,6 @@ class GameManager {
     try {
       final CardLoaderService cardLoaderService = CardLoaderService();
       final allCards = await cardLoaderService.loadCards();
-      _cards = allCards;
 
       if (allCards.isEmpty) {
         log('Keine Karten verfügbar');
@@ -62,7 +60,7 @@ class GameManager {
         _cards = filteredCards.take(maxPairs * 2).toList();
       }
       for (final card in _cards) {
-        _cardStatuses[card] = CardStatus.verdeckt;
+        _cardStatuses[card] = CardStatus.close;
       }
       onCardsLoaded(_cards);
       _cards.shuffle();
@@ -74,27 +72,54 @@ class GameManager {
 
   void onCardTap(CardModel card) {
     if (_isInteractionLocked ||
-        _cardStatuses[card] == CardStatus.aufgedeckt ||
-        _cardStatuses[card] == CardStatus.gefunden) {
+        _cardStatuses[card] == CardStatus.open ||
+        _cardStatuses[card] == CardStatus.match) {
       return;
     }
 
     if (firstCard == null) {
       // Erste Karte aufdecken
       firstCard = card;
-      _cardStatuses[card] = CardStatus.aufgedeckt;
-    } else if (secondCard == null && card != firstCard) {
-      // Zweite Karte aufdecken
-      secondCard = card;
-      _cardStatuses[card] = CardStatus.aufgedeckt;
-
-      // Übereinstimmung prüfen
-      _isInteractionLocked = true;
-      Future.delayed(const Duration(seconds: 1), () {
-        checkMatch();
-        _isInteractionLocked = false;
-      });
+      _cardStatuses[card] = CardStatus.open;
+      onCardsLoaded(_cards);
+      return;
     }
+
+    // Zweite Karte auswählen
+    if (secondCard == null && card != firstCard) {
+      secondCard = card;
+      _cardStatuses[card] = CardStatus.open;
+      onCardsLoaded(_cards); // UI aktualisieren
+
+      // Match prüfen
+      if (firstCard!.pairId == secondCard!.pairId) {
+        // Karten matchen
+        _cardStatuses[firstCard!] = CardStatus.match;
+        _cardStatuses[secondCard!] = CardStatus.match;
+        showMessage('Match gefunden!');
+        resetSelection();
+      } else {
+        // Kein Match - Interaktion für den nächsten Tap sperren
+        _isInteractionLocked = true;
+        showMessage('Kein Match! Tippe erneut, um die Karten zu verdecken.');
+        _isInteractionLocked = false; // Interaktion freigeben
+      }
+      return;
+    }
+
+    // Wenn es kein Match war, verdecke beide Karten beim nächsten Tap
+    if (firstCard != null && secondCard != null) {
+      _cardStatuses[firstCard!] = CardStatus.close;
+      _cardStatuses[secondCard!] = CardStatus.close;
+      resetSelection();
+      _isInteractionLocked = false; // Interaktion freigeben
+      onCardsLoaded(_cards); // UI aktualisieren
+    }
+  }
+
+  void resetSelection() {
+    firstCard = null;
+    secondCard = null;
   }
 
   int _getMaxPairs(Difficulty difficulty) {
@@ -118,7 +143,7 @@ class GameManager {
     _isInteractionLocked = false;
 
     for (final card in _cards) {
-      _cardStatuses[card] = CardStatus.verdeckt;
+      _cardStatuses[card] = CardStatus.close;
     }
 
     loadCards(
@@ -133,27 +158,23 @@ class GameManager {
 
     final isMatch = firstCard!.pairId == secondCard!.pairId;
     if (isMatch) {
-      _cardStatuses[firstCard!] = CardStatus.gefunden;
-      _cardStatuses[secondCard!] = CardStatus.gefunden;
-      showMessage('Match gefunden!');
+      _cardStatuses[firstCard!] = CardStatus.match;
+      _cardStatuses[secondCard!] = CardStatus.match;
+      showMessage('Match!');
     } else {
-      _cardStatuses[firstCard!] = CardStatus.verdeckt;
-      _cardStatuses[secondCard!] = CardStatus.verdeckt;
-      showMessage('Kein Match!');
+      _cardStatuses[firstCard!] = CardStatus.close;
+      _cardStatuses[secondCard!] = CardStatus.close;
+      showMessage('No Match!');
     }
-
-    // Zurücksetzen für den nächsten Zug
-    firstCard = null;
-    secondCard = null;
   }
 
   Set<int> get flippedCards => _cardStatuses.entries
-      .where((entry) => entry.value == CardStatus.aufgedeckt)
+      .where((entry) => entry.value == CardStatus.open)
       .map((entry) => _cards.indexOf(entry.key))
       .toSet();
 
   Set<int> get matchedCards => _cardStatuses.entries
-      .where((entry) => entry.value == CardStatus.gefunden)
+      .where((entry) => entry.value == CardStatus.match)
       .map((entry) => _cards.indexOf(entry.key))
       .toSet();
 

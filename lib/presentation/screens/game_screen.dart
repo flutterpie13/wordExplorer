@@ -26,7 +26,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  DifficultyLevel _difficultyLevel = DifficultyLevel(Difficulty.easy);
+  late DifficultyLevel _difficultyLevel;
   late CheckCardMatch _checkCardMatch;
   late GameManager _gameManager;
   late CardManager _cardManager;
@@ -38,6 +38,7 @@ class _GameScreenState extends State<GameScreen> {
   late String _selectedWordType;
   late int _selectedClass;
   late String _selectedDifficulty;
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +49,11 @@ class _GameScreenState extends State<GameScreen> {
     _selectedWordType = widget.selectedWordType;
     _selectedDifficulty = widget.selectedDifficulty;
 
+    // Initialisiere Schwierigkeitsgrad
+    _difficultyLevel = DifficultyLevel(Difficulty.values.firstWhere(
+        (d) => d.toString().split('.').last == _selectedDifficulty,
+        orElse: () => Difficulty.easy));
+
     // Initialisiere GameManager
     _gameManager = GameManager(
       context: context,
@@ -56,11 +62,7 @@ class _GameScreenState extends State<GameScreen> {
           _cards = loadedCards;
         });
       },
-      onGameReset: () => _gameManager.resetGame(
-        difficultyLevel: _difficultyLevel,
-        topic: _selectedTopic,
-        wordType: _selectedWordType,
-      ),
+      onGameReset: () => _resetGame(),
       showMessage: (message) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(message)));
@@ -71,17 +73,7 @@ class _GameScreenState extends State<GameScreen> {
     _checkCardMatch = CheckCardMatch(_difficultyLevel);
 
     // Lade Karten basierend auf den aktuellen Filtern
-    _gameManager.loadCards(
-      difficultyLevel: _difficultyLevel,
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
-
-    // Initialisiere CardManager und lade gefilterte Karten
-    _cardManager = CardManager();
-    _cardManager.loadCards().then((_) {
-      _loadCards();
-    });
+    _loadCards();
   }
 
   Future<void> _loadCards() async {
@@ -114,57 +106,21 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _changeDifficulty(Difficulty difficulty) {
-    _gameManager.changeDifficulty(
-      difficulty,
-      _difficultyLevel,
-      (newLevel) {
-        setState(() {
-          _difficultyLevel = newLevel;
-          _checkCardMatch = CheckCardMatch(newLevel);
-        });
-      },
-      topic: _selectedTopic,
-      wordType: _selectedWordType,
-    );
+    setState(() {
+      _difficultyLevel =
+          DifficultyLevel(difficulty); // Aktualisiere Schwierigkeitsgrad
+      _checkCardMatch = CheckCardMatch(_difficultyLevel); // Aktualisiere Logik
+    });
+
+    // Spiel mit neuem Schwierigkeitsgrad neu starten
+    _resetGame();
   }
 
-  /*void _checkMatch() {
-    final flippedCards = _gameManager.flippedCards.toList();
-
-    // Prüfen, ob genügend Karten umgedreht sind
-    if (flippedCards.isEmpty || flippedCards.length != 2) {
-      debugPrint('Nicht genügend Karten zum Überprüfen: $flippedCards');
-      return;
-    }
-    // Sicherstellen, dass die Indizes gültig sind
-    final firstIndex = flippedCards[0];
-    final secondIndex = flippedCards[1];
-    if (firstIndex >= _cards.length || secondIndex >= _cards.length) {
-      debugPrint('Ungültige Indizes: $firstIndex, $secondIndex');
-      return;
-    }
-
-    try {
-      final result = _gameManager.checkMatch(
-        _cards[firstIndex],
-        _cards[secondIndex],
-      );
-
-      if (!result) {
-        // Verdeckte die Karten, wenn sie kein Match sind
-        Future.delayed(const Duration(seconds: 1), () {});
-        setState(() {
-          _gameManager.toggleCard(firstIndex, forceHide: true);
-          _gameManager.toggleCard(secondIndex, forceHide: true);
-        });
-      }
-    } catch (e, stackTrace) {
-      log('Fehler beim Überprüfen von Matches: $e', stackTrace: stackTrace);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Fehler beim Überprüfen von Matches')),
-      );
-    }
-  }*/
+  int _getCrossAxisCount(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    const cardWidth = 80.0;
+    return (screenWidth / cardWidth).floor();
+  }
 
   void _showAdjustDialog() {
     showDialog(
@@ -224,16 +180,6 @@ class _GameScreenState extends State<GameScreen> {
                   }
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  _gameManager.resetGame(
-                    difficultyLevel: _difficultyLevel,
-                    topic: _selectedTopic,
-                    wordType: _selectedWordType,
-                  );
-                },
-                child: const Text('Restart Game'),
-              ), // Weitere Optionen hier hinzufügen
             ],
           ),
           actions: [
@@ -254,12 +200,6 @@ class _GameScreenState extends State<GameScreen> {
         );
       },
     );
-  }
-
-  int _getCrossAxisCount(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    const cardWidth = 80.0;
-    return (screenWidth / cardWidth).floor();
   }
 
   @override

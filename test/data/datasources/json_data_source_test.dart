@@ -56,7 +56,7 @@ void main() {
       // Simuliere das Laden aus `rootBundle`
       final ByteData data =
           ByteData.sublistView(Uint8List.fromList(mockJson.codeUnits));
-      tester.binding.defaultBinaryMessenger.setMockMessageHandler(
+      ServicesBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
         'flutter/assets',
         (message) async =>
             ByteData.sublistView(Uint8List.fromList(mockJson.codeUnits)),
