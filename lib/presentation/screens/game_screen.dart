@@ -242,6 +242,15 @@ class _GameScreenState extends State<GameScreen> {
         },
         child: Column(
           children: [
+            if (_gameManager.isGameOver()) // Anzeige bei Spielende
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Spiel beendet! Drücke "Restart", um erneut zu spielen.',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             Expanded(
               child: _cards.isEmpty
                   ? const Center(child: Text('Keine Karten verfügbar'))
@@ -259,14 +268,11 @@ class _GameScreenState extends State<GameScreen> {
                               _gameManager.flippedCards.contains(index) ||
                                   _gameManager.matchedCards.contains(index),
                           onTap: () {
-                            if (_gameManager.isInteractionLocked() ||
-                                _gameManager.flippedCards.contains(index)) {
-                              return;
+                            if (!_gameManager.isGameOver()) {
+                              setState(() {
+                                _gameManager.onCardTap(card);
+                              });
                             }
-
-                            setState(() {
-                              _gameManager.onCardTap(card);
-                            });
                           },
                         );
                       },
@@ -285,6 +291,35 @@ class _GameScreenState extends State<GameScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showWinDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Gewonnen!'),
+          content: const Text(
+              'Herzlichen Glückwunsch, du hast alle Paare gefunden!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialog schließen
+                _resetGame(); // Spiel neu starten
+              },
+              child: const Text('Nochmal spielen'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialog schließen
+                Navigator.of(context).pop(); // Zurück ins Hauptmenü
+              },
+              child: const Text('Zum Hauptmenü'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

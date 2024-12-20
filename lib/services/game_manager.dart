@@ -11,6 +11,9 @@ class GameManager {
   final Function(List<CardModel>) onCardsLoaded;
   final Function() onGameReset;
   final Function(String) showMessage;
+  bool _isGameOver = false;
+
+  bool isGameOver() => _isGameOver;
 
   List<CardModel> _cards = [];
   final Map<CardModel, CardStatus> _cardStatuses = {};
@@ -72,6 +75,7 @@ class GameManager {
 
   void onCardTap(CardModel card) {
     if (_isInteractionLocked ||
+        _isGameOver ||
         _cardStatuses[card] == CardStatus.open ||
         _cardStatuses[card] == CardStatus.match) {
       return;
@@ -97,7 +101,9 @@ class GameManager {
         _cardStatuses[firstCard!] = CardStatus.match;
         _cardStatuses[secondCard!] = CardStatus.match;
         showMessage('Match gefunden!');
+
         resetSelection();
+        checkWinCondition();
       } else {
         // Kein Match - Interaktion für den nächsten Tap sperren
         _isInteractionLocked = true;
@@ -178,6 +184,14 @@ class GameManager {
       .map((entry) => _cards.indexOf(entry.key))
       .toSet();
 
+  CardStatus getCardStatus(CardModel card) {
+    return _cardStatuses[card] ?? CardStatus.close; // Standardstatus: verdeckt
+  }
+
+  List<CardModel> getLoadedCards() {
+    return _cards; // Gibt die Liste der geladenen Karten zurück
+  }
+
   bool _validateIndices(int firstIndex, int secondIndex) {
     final valid = firstIndex < _cards.length && secondIndex < _cards.length;
     if (!valid) {
@@ -189,6 +203,17 @@ class GameManager {
 
   void shuffleCards() {
     _cards.shuffle(); // Zufällige Reihenfolge der Karten
+  }
+
+  void checkWinCondition() {
+    // Überprüfe, ob alle Karten den Status "match" haben
+    final allMatched =
+        _cardStatuses.values.every((status) => status == CardStatus.match);
+
+    if (allMatched && !_isGameOver) {
+      _isGameOver = true; // Setze den Spielstatus auf beendet
+      showMessage('Glückwunsch! Du hast alle Paare gefunden!');
+    }
   }
 
   void changeDifficulty(

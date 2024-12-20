@@ -1,7 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:word_explorer/domain/entities/card.dart';
+import 'package:word_explorer/domain/usecases/difficulty_level.dart';
 import 'package:word_explorer/services/card_loader_service.dart';
+import 'package:word_explorer/services/game_manager.dart';
+
+import '../methods.dart';
 
 class MockAssetBundle extends AssetBundle {
   final String jsonData;
@@ -147,6 +151,90 @@ void main() {
       expect(cards.length, 2);
       expect(cards[0].topic, 'tiere');
       expect(cards[1].topic, 'tiere');
+    });
+    test('Filter: Lädt Karten basierend auf Topic und WordType', () async {
+      const jsonData = '''
+  [
+    {"pairId": 1, "content": "dog", "isScene": false, "class": 1, "topic": "animals", "wordType": "noun"},
+    {"pairId": 1, "content": "A dog runs.", "isScene": true, "class": 1, "topic": "animals", "wordType": "noun"},
+    {"pairId": 2, "content": "apple", "isScene": false, "class": 1, "topic": "food", "wordType": "noun"},
+    {"pairId": 2, "content": "I eat an apple.", "isScene": true, "class": 1, "topic": "food", "wordType": "noun"}
+  ]
+  ''';
+
+      final mockBundle = MockAssetBundle(jsonData);
+      final cardLoader = CardLoaderService(assetBundle: mockBundle);
+
+      final filteredCards =
+          await cardLoader.loadCards(topic: 'animals', wordType: 'noun');
+      expect(filteredCards.length, 2);
+      expect(filteredCards[0].topic, 'animals');
+    });
+    group('CardLoaderService - Kartenanzahl basierend auf Schwierigkeitsgrad',
+        () {
+      GameManager gameManager;
+
+      setUp(() {});
+
+      testWidgets('Easy: Lädt 4 Paare', (WidgetTester tester) async {
+        final cards = [
+          for (var i = 1; i <= 10; i++) ...[
+            CardModel(
+                pairId: i,
+                content: 'Card $i',
+                isScene: false,
+                classLevel: 1,
+                topic: 'test',
+                wordType: 'noun'),
+            CardModel(
+                pairId: i,
+                content: 'Scene $i',
+                isScene: true,
+                classLevel: 1,
+                topic: 'test',
+                wordType: 'noun'),
+          ],
+        ];
+        gameManager = await initializeBuildContext(tester,
+            cards: [], onCardsLoaded: (_) {});
+
+        await gameManager.loadCards(
+          difficultyLevel: DifficultyLevel(Difficulty.easy),
+          topic: 'all',
+          wordType: 'all',
+        );
+        expect(gameManager.getLoadedCards().length, 8);
+      });
+
+      testWidgets('Hard: Lädt 10 Paare', (WidgetTester tester) async {
+        final cards = [
+          for (var i = 1; i <= 10; i++) ...[
+            CardModel(
+                pairId: i,
+                content: 'Card $i',
+                isScene: false,
+                classLevel: 1,
+                topic: 'test',
+                wordType: 'noun'),
+            CardModel(
+                pairId: i,
+                content: 'Scene $i',
+                isScene: true,
+                classLevel: 1,
+                topic: 'test',
+                wordType: 'noun'),
+          ],
+        ];
+        gameManager = await initializeBuildContext(tester,
+            cards: [], onCardsLoaded: (_) {});
+
+        await gameManager.loadCards(
+          difficultyLevel: DifficultyLevel(Difficulty.hard),
+          topic: 'all',
+          wordType: 'all',
+        );
+        expect(gameManager.getLoadedCards().length, 20);
+      });
     });
   });
 }
