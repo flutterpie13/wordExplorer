@@ -5,6 +5,8 @@ import '../domain/usecases/check_card_match.dart';
 import '../domain/usecases/difficulty_level.dart';
 import 'card_loader_service.dart';
 
+enum CardStatus { verdeckt, aufgedeckt, gefunden }
+
 class GameManager {
   final BuildContext context;
   final Function(List<CardModel>) onCardsLoaded;
@@ -12,10 +14,11 @@ class GameManager {
   final Function(String) showMessage;
 
   List<CardModel> _cards = [];
-  final Set<int> _matchedCards = {};
-  final Set<int> _flippedCards = {};
+  final Map<CardModel, CardStatus> _cardStatuses = {};
+  CardModel? firstCard;
+  CardModel? secondCard;
   bool _isInteractionLocked = false;
-
+  bool isInteractionLocked() => _isInteractionLocked;
   GameManager({
     required this.context,
     required this.onCardsLoaded,
@@ -29,8 +32,9 @@ class GameManager {
     required String wordType,
   }) async {
     try {
-      final cardLoaderService = CardLoaderService();
+      final CardLoaderService cardLoaderService = CardLoaderService();
       final allCards = await cardLoaderService.loadCards();
+      _cards = allCards;
 
       if (allCards.isEmpty) {
         log('Keine Karten verfügbar');
@@ -38,7 +42,7 @@ class GameManager {
         return;
       }
 
-      // Filterkarten basierend auf Thema und Wortart
+      // Kartenfilter basierend auf Thema und Wortart
       final filteredCards = allCards.where((card) {
         final matchesTopic =
             topic == 'all' || card.topic.toLowerCase() == topic.toLowerCase();
@@ -57,72 +61,40 @@ class GameManager {
         final maxPairs = _getMaxPairs(difficultyLevel.difficulty);
         _cards = filteredCards.take(maxPairs * 2).toList();
       }
-
+      for (final card in _cards) {
+        _cardStatuses[card] = CardStatus.verdeckt;
+      }
       onCardsLoaded(_cards);
+      _cards.shuffle();
     } catch (e, stackTrace) {
       log('Fehler beim Laden der Karten: $e', stackTrace: stackTrace);
       showMessage('Fehler beim Laden der Karten');
     }
   }
 
-  void resetGame({
-    required DifficultyLevel difficultyLevel,
-    required String topic,
-    required String wordType,
-  }) {
-    _flippedCards.clear();
-    _matchedCards.clear();
-    _isInteractionLocked = false;
-
-    loadCards(
-      difficultyLevel: difficultyLevel,
-      topic: topic,
-      wordType: wordType,
-    );
-    shuffleCards();
-
-    onGameReset();
-  }
-
-  bool checkMatch({
-    required CheckCardMatch checkCardMatch,
-    required int firstIndex,
-    required int secondIndex,
-  }) {
-    if (!_validateIndices(firstIndex, secondIndex)) {
-      return false;
+  void onCardTap(CardModel card) {
+    if (_isInteractionLocked ||
+        _cardStatuses[card] == CardStatus.aufgedeckt ||
+        _cardStatuses[card] == CardStatus.gefunden) {
+      return;
     }
 
-    final card1 = _cards[firstIndex];
-    final card2 = _cards[secondIndex];
-    final result = checkCardMatch.execute(card1, card2);
+    if (firstCard == null) {
+      // Erste Karte aufdecken
+      firstCard = card;
+      _cardStatuses[card] = CardStatus.aufgedeckt;
+    } else if (secondCard == null && card != firstCard) {
+      // Zweite Karte aufdecken
+      secondCard = card;
+      _cardStatuses[card] = CardStatus.aufgedeckt;
 
-    if (!result && flippedCards.length == 2) {
+      // Übereinstimmung prüfen
       _isInteractionLocked = true;
-      showMessage('No Match!');
       Future.delayed(const Duration(seconds: 1), () {
-        toggleCard(firstIndex, forceHide: true);
-        toggleCard(secondIndex, forceHide: true);
-
+        checkMatch();
         _isInteractionLocked = false;
       });
-    } else {
-      _matchedCards.addAll([firstIndex, secondIndex]);
-      _flippedCards.clear();
-      showMessage('Match!');
-      _isInteractionLocked = false;
     }
-
-    return result;
-  }
-
-  bool _validateIndices(int firstIndex, int secondIndex) {
-    final valid = firstIndex < _cards.length && secondIndex < _cards.length;
-    if (!valid) {
-      log('Ungültige Indizes: $firstIndex, $secondIndex');
-      showMessage('Ungültige Kartenindizes');
-    }
-    return valid;
   }
 
   int _getMaxPairs(Difficulty difficulty) {
@@ -136,18 +108,62 @@ class GameManager {
     }
   }
 
-  bool isInteractionLocked() => _isInteractionLocked;
-  Set<int> get matchedCards => _matchedCards;
-  Set<int> get flippedCards => _flippedCards;
+  void resetGame({
+    required DifficultyLevel difficultyLevel,
+    required String topic,
+    required String wordType,
+  }) {
+    firstCard = null;
+    secondCard = null;
+    _isInteractionLocked = false;
 
-  void toggleCard(int index, {bool forceHide = false}) {
-    if (forceHide) {
-      _flippedCards.remove(index); // Karte verdecken
-    } else if (_flippedCards.contains(index)) {
-      return; // Karte zuklappen
-    } else if (_flippedCards.length < 2) {
-      _flippedCards.add(index); // Karte aufdecken
+    for (final card in _cards) {
+      _cardStatuses[card] = CardStatus.verdeckt;
     }
+
+    loadCards(
+        difficultyLevel: difficultyLevel, topic: topic, wordType: wordType);
+    onGameReset();
+  }
+
+  void checkMatch() {
+    if (firstCard == null || secondCard == null) {
+      return;
+    }
+
+    final isMatch = firstCard!.pairId == secondCard!.pairId;
+    if (isMatch) {
+      _cardStatuses[firstCard!] = CardStatus.gefunden;
+      _cardStatuses[secondCard!] = CardStatus.gefunden;
+      showMessage('Match gefunden!');
+    } else {
+      _cardStatuses[firstCard!] = CardStatus.verdeckt;
+      _cardStatuses[secondCard!] = CardStatus.verdeckt;
+      showMessage('Kein Match!');
+    }
+
+    // Zurücksetzen für den nächsten Zug
+    firstCard = null;
+    secondCard = null;
+  }
+
+  Set<int> get flippedCards => _cardStatuses.entries
+      .where((entry) => entry.value == CardStatus.aufgedeckt)
+      .map((entry) => _cards.indexOf(entry.key))
+      .toSet();
+
+  Set<int> get matchedCards => _cardStatuses.entries
+      .where((entry) => entry.value == CardStatus.gefunden)
+      .map((entry) => _cards.indexOf(entry.key))
+      .toSet();
+
+  bool _validateIndices(int firstIndex, int secondIndex) {
+    final valid = firstIndex < _cards.length && secondIndex < _cards.length;
+    if (!valid) {
+      log('Ungültige Indizes: $firstIndex, $secondIndex');
+      showMessage('Ungültige Kartenindizes');
+    }
+    return valid;
   }
 
   void shuffleCards() {

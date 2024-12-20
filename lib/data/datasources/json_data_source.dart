@@ -4,6 +4,28 @@ import '../../domain/entities/card.dart';
 
 class JsonDataSource {
   Future<List<CardModel>> loadCardPairs() async {
+    // Lade die JSON-Datei aus dem assets-Ordner
+    final String response =
+        await rootBundle.loadString('assets/data/cards.json');
+    final List<dynamic> data = json.decode(response);
+
+    // Transformiere die JSON-Daten in CardPair-Objekte
+    return data
+        .map((json) => CardModel(
+              pairId: json['pairId'],
+              content: json['content'],
+              isScene: json['isScene'],
+              classLevel: json['classLevel'],
+              topic: json['topic'],
+              wordType: json['wordType'],
+            ))
+        .toList();
+  }
+}
+
+/*
+class JsonDataSource {
+  Future<List<CardModel>> loadCardPairs() async {
     try {
       final String jsonString =
           await rootBundle.loadString('assets/data/cards.json');
@@ -34,4 +56,4 @@ class JsonDataSource {
       return [];
     }
   }
-}
+}*/

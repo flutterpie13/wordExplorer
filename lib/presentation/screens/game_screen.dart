@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:word_explorer/domain/usecases/check_card_match.dart';
 import 'package:word_explorer/domain/usecases/difficulty_level.dart';
 import 'package:word_explorer/presentation/widgets/flip_card.dart';
+import '../../services/card_manager.dart';
 import '../../services/game_manager.dart';
 import '../../domain/entities/card.dart';
 
@@ -28,18 +29,26 @@ class _GameScreenState extends State<GameScreen> {
   DifficultyLevel _difficultyLevel = DifficultyLevel(Difficulty.easy);
   late CheckCardMatch _checkCardMatch;
   late GameManager _gameManager;
+  late CardManager _cardManager;
 
   List<CardModel> _cards = [];
   bool _isInteractionLocked = false;
 
   late String _selectedTopic;
   late String _selectedWordType;
-
+  late int _selectedClass;
+  late String _selectedDifficulty;
   @override
   void initState() {
     super.initState();
-    _checkCardMatch = CheckCardMatch(_difficultyLevel);
 
+    // Initialisiere die Variablen zuerst
+    _selectedClass = widget.selectedClass;
+    _selectedTopic = widget.selectedTopic;
+    _selectedWordType = widget.selectedWordType;
+    _selectedDifficulty = widget.selectedDifficulty;
+
+    // Initialisiere GameManager
     _gameManager = GameManager(
       context: context,
       onCardsLoaded: (loadedCards) {
@@ -47,17 +56,32 @@ class _GameScreenState extends State<GameScreen> {
           _cards = loadedCards;
         });
       },
-      onGameReset: _resetGame,
+      onGameReset: () => _gameManager.resetGame(
+        difficultyLevel: _difficultyLevel,
+        topic: _selectedTopic,
+        wordType: _selectedWordType,
+      ),
       showMessage: (message) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(message)));
       },
     );
 
-    _selectedTopic = widget.selectedTopic;
-    _selectedWordType = widget.selectedWordType;
+    // Initialisiere CardMatch-Logik
+    _checkCardMatch = CheckCardMatch(_difficultyLevel);
 
-    _loadCards();
+    // Lade Karten basierend auf den aktuellen Filtern
+    _gameManager.loadCards(
+      difficultyLevel: _difficultyLevel,
+      topic: _selectedTopic,
+      wordType: _selectedWordType,
+    );
+
+    // Initialisiere CardManager und lade gefilterte Karten
+    _cardManager = CardManager();
+    _cardManager.loadCards().then((_) {
+      _loadCards();
+    });
   }
 
   Future<void> _loadCards() async {
@@ -104,7 +128,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void _checkMatch() {
+  /*void _checkMatch() {
     final flippedCards = _gameManager.flippedCards.toList();
 
     // Prüfen, ob genügend Karten umgedreht sind
@@ -122,9 +146,8 @@ class _GameScreenState extends State<GameScreen> {
 
     try {
       final result = _gameManager.checkMatch(
-        checkCardMatch: _checkCardMatch,
-        firstIndex: flippedCards[0],
-        secondIndex: flippedCards[1],
+        _cards[firstIndex],
+        _cards[secondIndex],
       );
 
       if (!result) {
@@ -141,7 +164,7 @@ class _GameScreenState extends State<GameScreen> {
         const SnackBar(content: Text('Fehler beim Überprüfen von Matches')),
       );
     }
-  }
+  }*/
 
   void _showAdjustDialog() {
     showDialog(
@@ -266,41 +289,61 @@ class _GameScreenState extends State<GameScreen> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _cards.isEmpty
-                ? const Center(child: Text('Keine Karten verfügbar'))
-                : GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: _getCrossAxisCount(context),
-                      childAspectRatio: 3 / 4,
-                    ),
-                    itemCount: _cards.length,
-                    itemBuilder: (context, index) {
-                      final card = _cards[index];
-                      return FlipCard(
-                        frontContent: card.content,
-                        isFlipped: _gameManager.flippedCards.contains(index) ||
-                            _gameManager.matchedCards.contains(index),
-                        onTap: () {
-                          if (_gameManager.isInteractionLocked() ||
-                              _gameManager.flippedCards.contains(index)) {
-                            return;
-                          }
-
-                          setState(() {
-                            _gameManager.toggleCard(index);
-                            if (_gameManager.flippedCards.length == 2) {
-                              _checkMatch();
+      body: GestureDetector(
+        onTap: () {
+          // Überprüfe, ob zwei Karten offen sind
+          if (_gameManager.isInteractionLocked() &&
+              _gameManager.flippedCards.length == 2) {
+            setState(() {
+              _gameManager.flippedCards.clear(); // Verdecke die Karten
+              _isInteractionLocked = false; // Entsperre Aktionen
+            });
+          }
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: _cards.isEmpty
+                  ? const Center(child: Text('Keine Karten verfügbar'))
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: _getCrossAxisCount(context),
+                        childAspectRatio: 3 / 4,
+                      ),
+                      itemCount: _cards.length,
+                      itemBuilder: (context, index) {
+                        final card = _cards[index];
+                        return FlipCard(
+                          frontContent: card.content,
+                          isFlipped:
+                              _gameManager.flippedCards.contains(index) ||
+                                  _gameManager.matchedCards.contains(index),
+                          onTap: () {
+                            if (_gameManager.isInteractionLocked() ||
+                                _gameManager.flippedCards.contains(index)) {
+                              return;
                             }
-                          });
-                        },
-                      );
-                    },
-                  ),
-          ),
-        ],
+
+                            setState(() {
+                              _gameManager.onCardTap(card);
+                            });
+                          },
+                        );
+                      },
+                    ),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                _gameManager.resetGame(
+                  difficultyLevel: _difficultyLevel,
+                  topic: _selectedTopic,
+                  wordType: _selectedWordType,
+                );
+              },
+              child: const Icon(Icons.refresh),
+            ),
+          ],
+        ),
       ),
     );
   }

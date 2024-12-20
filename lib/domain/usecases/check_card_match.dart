@@ -11,11 +11,9 @@ class CheckCardMatch {
     if (difficultyLevel.difficulty == Difficulty.easy) {
       return card1.pairId == card2.pairId;
     } else if (difficultyLevel.difficulty == Difficulty.medium) {
-      return card1.pairId == card2.pairId && card1.wordType == card2.wordType;
+      return card1.pairId == card2.pairId;
     } else if (difficultyLevel.difficulty == Difficulty.hard) {
-      return card1.pairId == card2.pairId &&
-          card1.wordType == card2.wordType &&
-          card1.content == card2.content; // Zusätzliche Logik für Hard
+      return card1.pairId == card2.pairId; // Zusätzliche Logik für Hard
     }
     return false;
   }
